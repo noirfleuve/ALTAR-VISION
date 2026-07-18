@@ -37,6 +37,41 @@ body{
   line-height:1.55;
   -webkit-font-smoothing:antialiased;
 }
+/* ---------- SCAN EFFECT (fond, très subtil) ---------- */
+body::before,body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+}
+body::before{
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.035) 0px,
+    rgba(255,255,255,.035) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode:overlay;
+}
+body::after{
+  background:linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255,255,255,.05) 45%,
+    rgba(255,255,255,.09) 50%,
+    rgba(255,255,255,.05) 55%,
+    transparent 100%
+  );
+  height:180px;
+  animation:scan-move 9s linear infinite;
+  mix-blend-mode:overlay;
+}
+@keyframes scan-move{
+  0%{transform:translateY(-200px)}
+  100%{transform:translateY(100vh)}
+}
+@media (prefers-reduced-motion:reduce){
+  body::after{animation:none;display:none}
+}
+
 img{display:block;max-width:100%;height:auto}
 a{color:inherit;text-decoration:none}
 a:hover{opacity:.6}
