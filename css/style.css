@@ -90,10 +90,26 @@ a:hover{opacity:.6}
 .nav{
   position:sticky;top:0;z-index:50;
   display:flex;align-items:center;justify-content:space-between;
-  padding:14px var(--pad);
+  padding:18px var(--pad);
   background:rgba(0,0,0,.88);
   backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--line-soft);
+  background-repeat:no-repeat;
+  background-origin:content-box;
+  background-image:
+    linear-gradient(var(--ink),var(--ink)),linear-gradient(var(--ink),var(--ink)),
+    linear-gradient(var(--ink),var(--ink)),linear-gradient(var(--ink),var(--ink)),
+    linear-gradient(var(--ink),var(--ink)),linear-gradient(var(--ink),var(--ink)),
+    linear-gradient(var(--ink),var(--ink)),linear-gradient(var(--ink),var(--ink));
+  background-size:
+    18px 2px,2px 18px,
+    18px 2px,2px 18px,
+    18px 2px,2px 18px,
+    18px 2px,2px 18px;
+  background-position:
+    top left,top left,
+    top right,top right,
+    bottom left,bottom left,
+    bottom right,bottom right;
 }
 .nav-links{display:flex;gap:clamp(16px,3vw,34px)}
 .nav-links a{
@@ -142,24 +158,47 @@ section{padding:clamp(64px,11vw,150px) 0}
 .hero-logo{width:min(420px,70vw);margin:0 auto}
 .cta-row{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
 
-/* ---------- BOUTONS ---------- */
+/* ---------- BOUTONS (coins façon HUD) ---------- */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:10px;
   font-family:var(--display);font-size:15px;letter-spacing:.12em;text-transform:uppercase;
-  padding:14px 30px;border-radius:999px;border:1px solid var(--ink);
-  transition:transform .15s,background .2s,color .2s;
+  padding:17px 38px;border-radius:0;border:none;
+  background-repeat:no-repeat;
+  background-image:
+    linear-gradient(currentColor,currentColor),linear-gradient(currentColor,currentColor),
+    linear-gradient(currentColor,currentColor),linear-gradient(currentColor,currentColor),
+    linear-gradient(currentColor,currentColor),linear-gradient(currentColor,currentColor),
+    linear-gradient(currentColor,currentColor),linear-gradient(currentColor,currentColor);
+  background-size:
+    13px 2px,2px 13px,
+    13px 2px,2px 13px,
+    13px 2px,2px 13px,
+    13px 2px,2px 13px;
+  background-position:
+    top left,top left,
+    top right,top right,
+    bottom left,bottom left,
+    bottom right,bottom right;
+  transition:transform .18s ease,filter .18s ease,box-shadow .18s ease,background-color .2s,color .2s;
   cursor:var(--cursor);
 }
-.btn:hover{transform:translateY(-2px);opacity:1}
-.btn-solid{background:var(--ink);color:var(--bg)}
-.btn-solid:hover{background:#dddddd;color:var(--bg)}
-.btn-ghost{background:transparent;color:var(--ink)}
-.btn-ghost:hover{background:var(--ink);color:var(--bg)}
-.btn-dl{
-  border-radius:8px;padding:12px 22px;font-size:13px;
-  background:var(--bg);color:var(--ink);border:1px solid var(--line);
+.btn:hover{
+  opacity:1;
+  transform:scale(.96);
+  filter:brightness(1.4);
+  box-shadow:0 0 22px rgba(255,255,255,.3);
 }
-.btn-dl:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn-solid{background-color:var(--ink);color:var(--bg)}
+.btn-ghost{background-color:transparent;color:var(--ink)}
+.btn-dl{
+  padding:13px 24px;font-size:13px;
+  background-color:transparent;color:var(--ink);
+  background-size:
+    10px 2px,2px 10px,
+    10px 2px,2px 10px,
+    10px 2px,2px 10px,
+    10px 2px,2px 10px;
+}
 
 /* ---------- CARROUSEL ---------- */
 .carousel{position:relative}
@@ -215,7 +254,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 /* ---------- STATS (media) ---------- */
 .stats{
   display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:18px;margin-top:14px;
+  gap:18px;margin-top:34px;
 }
 .stat{
   background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--radius);
@@ -229,15 +268,17 @@ section{padding:clamp(64px,11vw,150px) 0}
 
 /* ---------- ABOUT ---------- */
 .about p{
-  font-size:clamp(19px,2.6vw,27px);line-height:1.5;font-weight:500;
-  margin:0 0 1.2em;color:var(--ink);
+  font-size:clamp(19px,2.6vw,27px);line-height:1.55;font-weight:500;
+  max-width:70ch;
+  margin:0 0 1.6em;color:var(--ink);
 }
 .about strong{font-weight:700;text-decoration:underline;text-underline-offset:4px}
 
 /* ---------- BLOCS TÉLÉCHARGEMENT ---------- */
 .dl-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
 .media-block{margin-top:88px}
-.media-block:first-of-type{margin-top:0}
+.media-block:first-of-type{margin-top:32px}
+.media-block h3{margin-bottom:22px}
 
 .duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center}
 .duo .frame{aspect-ratio:1/1}
@@ -252,13 +293,13 @@ section{padding:clamp(64px,11vw,150px) 0}
 /* ---------- GALERIE MADE BY YOU ---------- */
 .gallery{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  gap:14px;margin-top:20px;
+  gap:14px;margin-top:32px;
 }
 .gallery .frame{aspect-ratio:3/4;padding:18px}
 .gallery .frame img{width:75%}
 
 /* ---------- CONNECT CARDS (ticker défilant) ---------- */
-.connect-grid{display:grid;gap:22px;margin-top:26px}
+.connect-grid{display:grid;gap:22px;margin-top:32px}
 .connect-card{
   display:block;background:var(--bg);border:1px solid var(--line);
   border-radius:var(--radius);overflow:hidden;
