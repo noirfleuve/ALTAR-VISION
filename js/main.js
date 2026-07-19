@@ -108,3 +108,30 @@ document.querySelectorAll('[data-audio-player]').forEach((player) => {
 
   render();
 });
+
+// ---------- Curseur personnalisé sur le formulaire Klaviyo (waitlist) ----------
+// Klaviyo injecte son widget dans un Shadow DOM : le CSS de la page ne peut pas
+// l'atteindre. On injecte donc la règle de curseur directement à l'intérieur de
+// chaque shadow root trouvé, dès qu'il apparaît.
+(() => {
+  const container = document.querySelector('.klaviyo-form-U7bA4R');
+  if (!container) return;
+
+  const cursorRule = "*{cursor:url('assets/img/altar-cursor-40.png') 20 20, auto !important;}";
+
+  const injectIntoShadowRoots = (root) => {
+    root.querySelectorAll('*').forEach((el) => {
+      if (el.shadowRoot && !el.shadowRoot.querySelector('style[data-altar-cursor]')) {
+        const style = document.createElement('style');
+        style.setAttribute('data-altar-cursor', '');
+        style.textContent = cursorRule;
+        el.shadowRoot.appendChild(style);
+        injectIntoShadowRoots(el.shadowRoot);
+      }
+    });
+  };
+
+  injectIntoShadowRoots(container);
+  new MutationObserver(() => injectIntoShadowRoots(container))
+    .observe(container, { childList: true, subtree: true });
+})();

@@ -46,39 +46,10 @@ a,button,input,textarea,select,summary,label,
   cursor:var(--cursor);
 }
 
-/* ---------- SCAN EFFECT (fond) ---------- */
-body::before,body::after{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
-}
-body::before{
-  background:repeating-linear-gradient(
-    to bottom,
-    rgba(255,255,255,.09) 0px,
-    rgba(255,255,255,.09) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  mix-blend-mode:screen;
-}
-body::after{
-  background:linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(255,255,255,.14) 40%,
-    rgba(255,255,255,.32) 50%,
-    rgba(255,255,255,.14) 60%,
-    transparent 100%
-  );
-  height:220px;
-  animation:scan-move 7s linear infinite;
-  mix-blend-mode:screen;
-}
-@keyframes scan-move{
-  0%{transform:translateY(-260px)}
-  100%{transform:translateY(100vh)}
-}
-@media (prefers-reduced-motion:reduce){
-  body::after{animation:none;display:none}
+/* forcer le curseur même sur le widget embarqué Klaviyo (waitlist) */
+.klaviyo-form-U7bA4R,
+.klaviyo-form-U7bA4R *{
+  cursor:var(--cursor) !important;
 }
 
 img{display:block;max-width:100%;height:auto}
