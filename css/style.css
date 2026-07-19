@@ -64,23 +64,7 @@ a:hover{opacity:.6}
   padding:18px var(--pad);
   background:rgba(0,0,0,.88);
   backdrop-filter:blur(10px);
-  background-repeat:no-repeat;
-  background-origin:content-box;
-  background-image:
-    linear-gradient(var(--ink),var(--ink)),linear-gradient(var(--ink),var(--ink)),
-    linear-gradient(var(--ink),var(--ink)),linear-gradient(var(--ink),var(--ink)),
-    linear-gradient(var(--ink),var(--ink)),linear-gradient(var(--ink),var(--ink)),
-    linear-gradient(var(--ink),var(--ink)),linear-gradient(var(--ink),var(--ink));
-  background-size:
-    18px 2px,2px 18px,
-    18px 2px,2px 18px,
-    18px 2px,2px 18px,
-    18px 2px,2px 18px;
-  background-position:
-    top left,top left,
-    top right,top right,
-    bottom left,bottom left,
-    bottom right,bottom right;
+  border-bottom:1px solid var(--line-soft);
 }
 .nav-links{display:flex;gap:clamp(16px,3vw,34px)}
 .nav-links a{
@@ -126,7 +110,7 @@ section{padding:clamp(64px,11vw,150px) 0}
   text-align:center;gap:26px;padding-top:40px;
 }
 .hero .brand{color:var(--ink)}
-.hero-logo{width:min(420px,70vw);margin:0 auto}
+.hero-logo{width:min(240px,45vw);margin:0 auto}
 .cta-row{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
 
 /* ---------- BOUTONS (coins façon HUD) ---------- */
