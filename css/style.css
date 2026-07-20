@@ -261,7 +261,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 .carousel{position:relative}
 .carousel-track{
   display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;
-  align-items:center;touch-action:pan-x;
+  align-items:center;touch-action:pan-x;-webkit-overflow-scrolling:touch;
   padding:6px 2px 18px;scrollbar-width:none;
 }
 .carousel-track::-webkit-scrollbar{display:none}
@@ -307,6 +307,10 @@ section{padding:clamp(64px,11vw,150px) 0}
 @media (min-width:761px){
   #zenyth-aim .carousel-nav.prev{left:-64px}
   #zenyth-aim .carousel-nav.next{right:-64px}
+}
+/* téléphone : pas de flèches, navigation uniquement au doigt (swipe) */
+@media (max-width:600px){
+  .carousel-nav{display:none}
 }
 
 /* ---------- WAITLIST ---------- */
