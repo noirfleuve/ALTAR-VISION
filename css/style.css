@@ -103,7 +103,7 @@ body::after{
 }
 @keyframes logo-breathe{
   0%{opacity:0}
-  50%{opacity:.36}
+  50%{opacity:.324}
   100%{opacity:0}
 }
 /* animation dédiée (identique à glow-shake dans l'esprit) pour ne dépendre
