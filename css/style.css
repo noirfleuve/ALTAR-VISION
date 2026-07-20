@@ -383,7 +383,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 .faq-icon{flex:0 0 auto;font-size:26px;line-height:1;transition:transform .25s}
 .faq-item[open] .faq-icon{transform:rotate(45deg)}
 .faq-a{
-  overflow:hidden;max-height:0;transition:max-height .3s ease;
+  display:block;overflow:hidden;max-height:0;transition:max-height .28s ease;
 }
 .faq-item[open] .faq-a{max-height:400px}
 .faq-a p{
