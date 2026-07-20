@@ -80,6 +80,16 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   prev?.addEventListener('click', () => move(-1));
 
   window.addEventListener('resize', () => snapTo(index, false));
+
+  // Défilement automatique (bouton "suivant") toutes les 3s, en pause au
+  // survol/tactile pour ne pas gêner la lecture.
+  let autoplay = setInterval(() => move(1), 3000);
+  const pause  = () => clearInterval(autoplay);
+  const resume = () => { pause(); autoplay = setInterval(() => move(1), 3000); };
+  carousel.addEventListener('mouseenter', pause);
+  carousel.addEventListener('mouseleave', resume);
+  carousel.addEventListener('touchstart', pause, { passive: true });
+  carousel.addEventListener('touchend', resume);
 });
 
 // ---------- Lecteur audio (page Lore) ----------
