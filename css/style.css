@@ -184,6 +184,7 @@ section{padding:clamp(64px,11vw,150px) 0}
   display:flex;align-items:center;gap:14px;color:var(--ink);
   margin:clamp(8px,2vw,28px) auto;max-width:1160px;padding:0 var(--pad);
 }
+.sep img{height:22px;width:auto;flex:0 0 auto}
 .sep::before,.sep::after{content:"";flex:1;height:1px;background:var(--line)}
 /* sep imbriqué dans un .wrap (ex: entre waitlist et "CONNECT WITH ALTAR") :
    pas de double padding horizontal, doit occuper toute la largeur du .wrap. */
