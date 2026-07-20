@@ -77,6 +77,24 @@ body::before{
     glow-shake .12s linear infinite;
 }
 
+/* logo altar_logo au centre de la sphère, recoloré en noir (même couleur que
+   le fond) et animé avec les mêmes effets (apparition/disparition, secousse).
+   Le scintillement de luminosité n'est pas appliqué : sur un noir pur, une
+   variation de brightness() reste invisible (0 × n = 0), donc sans effet. */
+body::after{
+  content:url('../assets/img/altar_logo.png');
+  position:fixed;
+  top:50%;left:50%;
+  width:min(26vw,240px);
+  filter:brightness(0);
+  pointer-events:none;
+  z-index:-1;
+  opacity:0;
+  animation:
+    glow-breathe 4s ease-in-out infinite,
+    glow-shake .12s linear infinite;
+}
+
 /* particules (cubes/hexagones) tombant dans la sphère, injectées par main.js
    et confinées/synchronisées avec elle via le même masque et le même cycle. */
 .bg-particles{
@@ -144,7 +162,7 @@ body::before{
 }
 
 @media (prefers-reduced-motion:reduce){
-  body::before,.bg-particles{animation:none;opacity:0}
+  body::before,body::after,.bg-particles{animation:none;opacity:0}
   .waitlist::before,.ticker::before,.crosslink::before{animation:none}
 }
 
