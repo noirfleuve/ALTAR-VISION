@@ -12,37 +12,34 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   const count = originals.length;
   if (!count) return;
 
-  // On duplique la série d'items 3x : [copie][ORIGINAUX][copie].
-  // On se positionne sur le bloc du milieu et on translate ; dès qu'on
-  // dépasse un bloc, on rembobine la position de la largeur d'un bloc,
-  // sans transition, donc invisible → boucle infinie sans butée ni saut.
+  // On duplique la série d'items 3x : [copie][ORIGINAUX][copie], dans le
+  // même ordre partout (pour rebobiner sans saut visuel).
   originals.forEach((n) => track.appendChild(n.cloneNode(true)));
   [...originals].reverse().forEach((n) => track.insertBefore(n.cloneNode(true), track.firstChild));
 
-  track.style.overflow = 'hidden';          // on gère le défilement nous-mêmes
-  track.style.scrollBehavior = 'auto';
+  track.style.overflow = 'hidden';          // on masque le scroll natif à la souris/tactile...
 
-  // Les images gardent leurs propres proportions (largeurs variables selon
-  // l'image), donc on ne peut pas se baser sur une largeur de pas fixe : on
-  // utilise l'index de l'item ciblé et sa position réelle (offsetLeft),
-  // qui reflète la mise en page flex indépendamment du transform appliqué.
-  let index = count;                        // item de tête = début du bloc central
+  // ...mais on continue d'utiliser scrollLeft (et non un transform calculé à
+  // la main) pour positionner la piste : le navigateur borne toujours cette
+  // valeur à une plage valide, donc une erreur de calcul ne peut jamais
+  // pousser le contenu hors champ indéfiniment — contrairement à un
+  // translateX() manuel, qui n'a aucune limite de sécurité intégrée.
+  const items = () => Array.from(track.children); // 3 × count éléments
+  let index = count;                                // item de tête = bloc central
   let animating = false;
 
-  const items = () => Array.from(track.children);
-
-  const apply = (smooth) => {
-    const target = items()[index];
-    track.style.transition = smooth ? 'transform .38s ease' : 'none';
-    track.style.transform = `translateX(${-target.offsetLeft}px)`;
+  const snapTo = (i, smooth) => {
+    track.style.scrollBehavior = smooth ? 'smooth' : 'auto';
+    track.scrollLeft = items()[i].offsetLeft;
   };
 
   // Init : on place la piste sur le bloc central. La largeur de chaque item
   // dépend de son image (plus d'aspect-ratio fixe) : tant qu'une image n'est
   // pas chargée, son offsetLeft n'est pas fiable, donc on recale une fois
   // toutes les images prêtes (les clones incluses).
-  const reset = () => { index = count; apply(false); };
+  const reset = () => { index = count; snapTo(index, false); };
   requestAnimationFrame(reset);
+  window.addEventListener('load', reset);
 
   const imgs = Array.from(track.querySelectorAll('img'));
   let pending = imgs.length;
@@ -56,23 +53,33 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     if (animating) return;
     animating = true;
     index += dir;
-    apply(true);
+    snapTo(index, true);
   };
 
-  // À la fin de l'animation, si on a dépassé le bloc central dans un sens,
-  // on rembobine l'index d'un bloc complet sans transition (invisible),
-  // vers l'item équivalent du bloc central → boucle infinie sans butée.
-  track.addEventListener('transitionend', () => {
+  // Une fois le scroll fluide terminé, si on a dépassé le bloc central dans
+  // un sens, on rembobine l'index d'un bloc complet sans animation
+  // (invisible) vers l'item équivalent → boucle infinie sans butée.
+  const settle = () => {
     if (index >= 2 * count) index -= count;
     if (index < count)      index += count;
-    apply(false);
+    snapTo(index, false);
     animating = false;
-  });
+  };
+  if ('onscrollend' in window) {
+    track.addEventListener('scrollend', settle);
+  } else {
+    // Repli pour les navigateurs sans l'évènement scrollend natif.
+    let settleTimer;
+    track.addEventListener('scroll', () => {
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(settle, 150);
+    });
+  }
 
   next?.addEventListener('click', () => move(1));
   prev?.addEventListener('click', () => move(-1));
 
-  window.addEventListener('resize', () => apply(false));
+  window.addEventListener('resize', () => snapTo(index, false));
 });
 
 // ---------- Lecteur audio (page Lore) ----------
