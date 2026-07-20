@@ -25,8 +25,8 @@
   --pad:clamp(20px,5vw,72px);
   --display:'Mikadan',Impact,sans-serif;
   --body:'Mikadan',system-ui,sans-serif;
-  --glow-w:min(110vw,1650px);
-  --glow-h:min(56vw,700px);
+  --glow-w:min(130vw,1950px);
+  --glow-h:min(72vw,880px);
   --glow-mask:radial-gradient(ellipse at center, #000 0%, #000 45%, transparent 72%);
 }
 
