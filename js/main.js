@@ -184,3 +184,28 @@ document.querySelectorAll('[data-audio-player]').forEach((player) => {
 
   document.body.appendChild(container);
 })();
+
+// ---------- Parallaxe légère du fond selon la position de la souris ----------
+// Pilote --parallax-x/-y (lues par les keyframes glow-shake dans style.css),
+// avec un lissage (lerp) pour un mouvement fluide plutôt qu'un suivi 1:1.
+(() => {
+  if (!window.matchMedia('(pointer:fine)').matches) return; // pas de souris → rien à faire
+
+  const root = document.documentElement;
+  const strength = 40; // amplitude max en px
+  let targetX = 0, targetY = 0, curX = 0, curY = 0;
+
+  window.addEventListener('mousemove', (e) => {
+    targetX = ((e.clientX / window.innerWidth) * 2 - 1) * strength;
+    targetY = ((e.clientY / window.innerHeight) * 2 - 1) * strength;
+  });
+
+  const tick = () => {
+    curX += (targetX - curX) * 0.06;
+    curY += (targetY - curY) * 0.06;
+    root.style.setProperty('--parallax-x', `${curX.toFixed(2)}px`);
+    root.style.setProperty('--parallax-y', `${curY.toFixed(2)}px`);
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+})();

@@ -112,12 +112,10 @@ body::before{
   85%{opacity:.9}
   100%{transform:translateY(600px) rotate(200deg);opacity:0}
 }
-/* téléphone : la sphère ne doit pas s'étirer pour couvrir toute la largeur
-   de l'écran (elle suit sinon 95vw) — on la fixe à une taille raisonnable
-   et constante, qui reste visuellement conséquente sans prendre l'écran. */
+/* téléphone : la sphère s'étire sur toute la largeur de l'écran. */
 @media (max-width:600px){
   :root{
-    --glow-w:340px;
+    --glow-w:100vw;
     --glow-h:230px;
   }
 }
@@ -136,12 +134,13 @@ body::before{
   80%{filter:brightness(1)}
   100%{filter:brightness(1)}
 }
-/* tremblement rapide mais très léger : seule la vitesse est marquée, pas l'amplitude */
+/* tremblement rapide mais très léger : seule la vitesse est marquée, pas l'amplitude.
+   translate(--parallax-x/-y) ajoute la parallaxe pilotée par la souris (main.js). */
 @keyframes glow-shake{
-  0%,100%{transform:translate(-50%,-50%) translate(0,0)}
-  25%{transform:translate(-50%,-50%) translate(1.5px,-1px)}
-  50%{transform:translate(-50%,-50%) translate(-1px,1.5px)}
-  75%{transform:translate(-50%,-50%) translate(1px,1px)}
+  0%,100%{transform:translate(-50%,-50%) translate(0,0) translate(var(--parallax-x,0px),var(--parallax-y,0px))}
+  25%{transform:translate(-50%,-50%) translate(1.5px,-1px) translate(var(--parallax-x,0px),var(--parallax-y,0px))}
+  50%{transform:translate(-50%,-50%) translate(-1px,1.5px) translate(var(--parallax-x,0px),var(--parallax-y,0px))}
+  75%{transform:translate(-50%,-50%) translate(1px,1px) translate(var(--parallax-x,0px),var(--parallax-y,0px))}
 }
 
 @media (prefers-reduced-motion:reduce){
