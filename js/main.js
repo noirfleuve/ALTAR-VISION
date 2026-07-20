@@ -126,26 +126,30 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     });
   }
 
-  // Glisser-déposer à la souris (desktop) : le contenu suit le curseur,
-  // exactement comme un swipe tactile. Contrairement au tactile, il n'y a
-  // pas d'inertie ici, donc on peut recaler immédiatement au relâchement.
+  // Glisser-déposer à la souris (desktop uniquement — voir plus bas). Sur
+  // tactile, certains navigateurs synthétisent quand même des évènements
+  // souris pendant un geste, et un preventDefault() sur mousedown pouvait
+  // bloquer le scroll vertical de la page quand on appuyait sur le carousel.
+  const hasFinePointer = window.matchMedia('(pointer:fine)').matches;
   let dragStartX = 0, dragStartScroll = 0;
-  track.addEventListener('mousedown', (e) => {
-    dragging = true;
-    dragStartX = e.clientX;
-    dragStartScroll = track.scrollLeft;
-    pause();
-    e.preventDefault(); // évite la sélection de texte et le drag natif des images
-  });
-  window.addEventListener('mousemove', (e) => {
-    if (!dragging) return;
-    track.scrollLeft = dragStartScroll - (e.clientX - dragStartX);
-  });
-  window.addEventListener('mouseup', () => {
-    if (!dragging) return;
-    dragging = false;
-    settle(); // resume() est appelé depuis settle() une fois la position vraiment stabilisée
-  });
+  if (hasFinePointer) {
+    track.addEventListener('mousedown', (e) => {
+      dragging = true;
+      dragStartX = e.clientX;
+      dragStartScroll = track.scrollLeft;
+      pause();
+      e.preventDefault(); // évite la sélection de texte et le drag natif des images
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      track.scrollLeft = dragStartScroll - (e.clientX - dragStartX);
+    });
+    window.addEventListener('mouseup', () => {
+      if (!dragging) return;
+      dragging = false;
+      settle(); // resume() est appelé depuis settle() une fois la position vraiment stabilisée
+    });
+  }
 
   next?.addEventListener('click', () => move(1));
   prev?.addEventListener('click', () => move(-1));
@@ -157,7 +161,6 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   // l'inertie du scroll encore active, ce qui pouvait figer le geste tactile.
   // On le désactive donc entièrement sur les appareils sans souris, et on ne
   // le réactive ailleurs qu'une fois settle() confirmé (scroll vraiment fini).
-  const hasFinePointer = window.matchMedia('(pointer:fine)').matches;
   let autoplay = hasFinePointer ? setInterval(() => move(1), 2000) : null;
   const pause  = () => clearInterval(autoplay);
   const resume = () => {
@@ -271,11 +274,21 @@ document.querySelectorAll('[data-audio-player]').forEach((player) => {
   pulse.setAttribute('aria-hidden', 'true');
   document.body.appendChild(pulse);
 
-  document.addEventListener('click', () => {
+  const trigger = () => {
     pulse.classList.remove('active');
-    void pulse.offsetWidth; // force le reflow pour pouvoir relancer l'animation sur des clics rapprochés
+    void pulse.offsetWidth; // force le reflow pour pouvoir relancer l'animation sur des appuis rapprochés
     pulse.classList.add('active');
-  });
+  };
+
+  // Sur tactile, un appui maintenu pour scroller ne déclenche pas "click"
+  // (le navigateur l'interprète comme un scroll, pas un tap) : on utilise
+  // donc touchstart, qui se déclenche une seule fois dès que le doigt se
+  // pose, que le geste devienne ensuite un tap ou un scroll maintenu.
+  if (window.matchMedia('(pointer:fine)').matches) {
+    document.addEventListener('click', trigger);
+  } else {
+    document.addEventListener('touchstart', trigger, { passive: true });
+  }
 })();
 
 // ---------- Parallaxe légère du fond selon la position de la souris ----------
