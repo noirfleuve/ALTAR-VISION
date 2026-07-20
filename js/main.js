@@ -22,43 +22,49 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   track.style.overflow = 'hidden';          // on gère le défilement nous-mêmes
   track.style.scrollBehavior = 'auto';
 
-  let offset = 0;                            // position courante (px) depuis le début de la piste
+  // Les images gardent leurs propres proportions (largeurs variables selon
+  // l'image), donc on ne peut pas se baser sur une largeur de pas fixe : on
+  // utilise l'index de l'item ciblé et sa position réelle (offsetLeft),
+  // qui reflète la mise en page flex indépendamment du transform appliqué.
+  let index = count;                        // item de tête = début du bloc central
   let animating = false;
 
-  const stepWidth = () => {
-    const item = track.querySelector('.carousel-item');
-    const gap = parseFloat(getComputedStyle(track).gap) || 18;
-    return item.getBoundingClientRect().width + gap;
-  };
-  const blockWidth = () => stepWidth() * count;
-
-  // Position de base = début du bloc central.
-  const baseScroll = () => blockWidth();
+  const items = () => Array.from(track.children);
 
   const apply = (smooth) => {
+    const target = items()[index];
     track.style.transition = smooth ? 'transform .38s ease' : 'none';
-    track.style.transform = `translateX(${-offset}px)`;
+    track.style.transform = `translateX(${-target.offsetLeft}px)`;
   };
 
-  // Init : on place la piste sur le bloc central via transform.
-  const reset = () => { offset = baseScroll(); apply(false); };
+  // Init : on place la piste sur le bloc central. La largeur de chaque item
+  // dépend de son image (plus d'aspect-ratio fixe) : tant qu'une image n'est
+  // pas chargée, son offsetLeft n'est pas fiable, donc on recale une fois
+  // toutes les images prêtes (les clones incluses).
+  const reset = () => { index = count; apply(false); };
   requestAnimationFrame(reset);
+
+  const imgs = Array.from(track.querySelectorAll('img'));
+  let pending = imgs.length;
+  imgs.forEach((img) => {
+    const done = () => { if (--pending === 0) reset(); };
+    if (img.complete) done();
+    else img.addEventListener('load', done, { once: true });
+  });
 
   const move = (dir) => {
     if (animating) return;
     animating = true;
-    offset += dir * stepWidth();
+    index += dir;
     apply(true);
   };
 
-  // À la fin de l'animation, si on a dépassé un bloc complet dans un sens,
-  // on ré-emballe la position sans transition (invisible). Le bloc central
-  // commence à bw (= baseScroll()), donc les bornes de rebouclage sont
-  // [0, 2*bw] autour de cette position de base, pas [-bw, bw] autour de 0.
+  // À la fin de l'animation, si on a dépassé le bloc central dans un sens,
+  // on rembobine l'index d'un bloc complet sans transition (invisible),
+  // vers l'item équivalent du bloc central → boucle infinie sans butée.
   track.addEventListener('transitionend', () => {
-    const bw = blockWidth();
-    if (offset >= 2 * bw) offset -= bw;
-    if (offset <= 0)      offset += bw;
+    if (index >= 2 * count) index -= count;
+    if (index < count)      index += count;
     apply(false);
     animating = false;
   });
@@ -66,7 +72,7 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   next?.addEventListener('click', () => move(1));
   prev?.addEventListener('click', () => move(-1));
 
-  window.addEventListener('resize', () => { offset = baseScroll(); apply(false); });
+  window.addEventListener('resize', () => apply(false));
 });
 
 // ---------- Lecteur audio (page Lore) ----------
