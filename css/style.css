@@ -107,7 +107,7 @@ section{padding:clamp(64px,11vw,150px) 0}
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;gap:26px;padding-top:8px;
 }
-.hero .brand{color:var(--ink)}
+.hero .brand{color:var(--ink);margin-bottom:0}
 .hero-logo{width:min(240px,45vw);margin:0 auto}
 .cta-row{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
 
@@ -171,12 +171,32 @@ section{padding:clamp(64px,11vw,150px) 0}
 .carousel-item img{height:100%;width:auto;max-width:min(80vw,520px);object-fit:contain;border:none}
 .carousel-nav{
   position:absolute;top:50%;transform:translateY(-50%);
-  width:46px;height:46px;border-radius:50%;
-  background:var(--bg);border:1px solid var(--ink);color:var(--ink);
-  font-size:20px;cursor:var(--cursor);display:grid;place-items:center;
-  transition:background .2s,color .2s;z-index:2;
+  width:46px;height:46px;border-radius:0;border:none;
+  background-color:transparent;color:var(--ink);
+  background-repeat:no-repeat;
+  background-image:
+    linear-gradient(currentColor,currentColor),linear-gradient(currentColor,currentColor),
+    linear-gradient(currentColor,currentColor),linear-gradient(currentColor,currentColor),
+    linear-gradient(currentColor,currentColor),linear-gradient(currentColor,currentColor),
+    linear-gradient(currentColor,currentColor),linear-gradient(currentColor,currentColor);
+  background-size:
+    11px 2px,2px 11px,
+    11px 2px,2px 11px,
+    11px 2px,2px 11px,
+    11px 2px,2px 11px;
+  background-position:
+    top left,top left,
+    top right,top right,
+    bottom left,bottom left,
+    bottom right,bottom right;
+  font-size:18px;cursor:var(--cursor);display:grid;place-items:center;
+  transition:transform .18s ease,filter .18s ease,box-shadow .18s ease;z-index:2;
 }
-.carousel-nav:hover{background:var(--ink);color:var(--bg)}
+.carousel-nav:hover{
+  transform:translateY(-50%) scale(.92);
+  filter:brightness(1.4);
+  box-shadow:0 0 18px rgba(255,255,255,.3);
+}
 .carousel-nav.prev{left:-8px}
 .carousel-nav.next{right:-8px}
 
