@@ -74,10 +74,8 @@ a:hover{opacity:.6}
 }
 .nav-links a:hover{color:var(--ink);opacity:1}
 .nav-links a[aria-current="page"]{color:var(--ink);border-bottom:2px solid var(--ink)}
-.nav-logo{
-  font-family:var(--display);font-size:20px;color:var(--ink);
-  letter-spacing:.05em;
-}
+.nav-logo{display:flex;align-items:center}
+.nav-logo img{height:26px;width:auto;display:block}
 
 /* ---------- LAYOUT ---------- */
 .wrap{max-width:1160px;margin:0 auto;padding:0 var(--pad)}
