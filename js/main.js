@@ -160,3 +160,27 @@ document.querySelectorAll('[data-audio-player]').forEach((player) => {
   new MutationObserver(() => injectIntoShadowRoots(container))
     .observe(container, { childList: true, subtree: true });
 })();
+
+// ---------- Particules (cubes/hexagones) de la sphère de fond ----------
+// Le CSS ne peut créer que 2 pseudo-éléments par élément (::before/::after),
+// insuffisant pour plusieurs particules : on les génère ici et on les
+// confine/synchronise avec la sphère via le même masque et les mêmes
+// animations (voir .bg-particles dans style.css).
+(() => {
+  const container = document.createElement('div');
+  container.className = 'bg-particles';
+  container.setAttribute('aria-hidden', 'true');
+
+  const count = 16;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('span');
+    p.className = `bg-particle ${i % 2 === 0 ? 'cube' : 'hex'}`;
+    const duration = 3 + Math.random() * 3;
+    p.style.left = `${Math.random() * 100}%`;
+    p.style.animationDuration = `${duration.toFixed(2)}s`;
+    p.style.animationDelay = `${(-Math.random() * duration).toFixed(2)}s`;
+    container.appendChild(p);
+  }
+
+  document.body.appendChild(container);
+})();
