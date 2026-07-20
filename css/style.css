@@ -595,8 +595,14 @@ section{padding:clamp(64px,11vw,150px) 0}
 @media (max-width:760px){
   .duo{grid-template-columns:1fr}
   .char,.char.flip{grid-template-columns:1fr}
-  .char.flip .char-img{order:0}
-  .char-img{max-width:320px;margin:0 auto}
+  /* ordre demandé sur téléphone : nom, image, description. Le <div> qui
+     enveloppe habituellement le nom + la description doit "disparaître"
+     (display:contents) pour que ces deux éléments deviennent des items de
+     grille indépendants de .char, chacun avec son propre "order". */
+  .char > div:not(.char-img){display:contents}
+  .char-name{order:1}
+  .char-img{order:2;max-width:320px;margin:0 auto}
+  .char-desc{order:3}
   .connect-body{flex-direction:column;align-items:flex-start}
   .carousel-nav.prev{left:4px}
   .carousel-nav.next{right:4px}
