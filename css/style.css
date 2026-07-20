@@ -82,23 +82,37 @@ body::before{
    Le scintillement de luminosité n'est pas appliqué : sur un noir pur, une
    variation de brightness() reste invisible (0 × n = 0), donc sans effet. */
 body::after{
-  content:url('../assets/img/altar_logo.png');
+  content:"";
   position:fixed;
   top:50%;left:50%;
   transform:translate(-50%,-50%); /* base de secours si l'animation est coupée (reduced-motion) */
   width:min(15vw,130px);
+  height:min(8.2vw,71px);
+  margin:0;
+  background-image:url('../assets/img/altar_logo.png');
+  background-repeat:no-repeat;
+  background-size:contain;
+  background-position:center;
   filter:brightness(0);
   pointer-events:none;
   z-index:-1;
   opacity:0;
   animation:
     logo-breathe 4s ease-in-out infinite,
-    glow-shake .12s linear infinite;
+    logo-shake .12s linear infinite;
 }
 @keyframes logo-breathe{
   0%{opacity:0}
   50%{opacity:.4}
   100%{opacity:0}
+}
+/* animation dédiée (identique à glow-shake dans l'esprit) pour ne dépendre
+   d'aucun autre élément : centrage + secousse + parallaxe, tout-en-un. */
+@keyframes logo-shake{
+  0%,100%{transform:translate(-50%,-50%) translate(0,0) translate(var(--parallax-x,0px),var(--parallax-y,0px))}
+  25%{transform:translate(-50%,-50%) translate(1.5px,-1px) translate(var(--parallax-x,0px),var(--parallax-y,0px))}
+  50%{transform:translate(-50%,-50%) translate(-1px,1.5px) translate(var(--parallax-x,0px),var(--parallax-y,0px))}
+  75%{transform:translate(-50%,-50%) translate(1px,1px) translate(var(--parallax-x,0px),var(--parallax-y,0px))}
 }
 
 /* particules (cubes/hexagones) tombant dans la sphère, injectées par main.js
@@ -453,11 +467,12 @@ section{padding:clamp(64px,11vw,150px) 0}
 .ticker-inner span{margin-right:.8em;display:inline-flex;align-items:center;gap:.35em}
 .ticker-inner span::after{
   content:"";display:inline-block;width:.7em;height:.7em;
-  margin-left:.8em;vertical-align:middle;object-fit:contain;
+  margin-left:.8em;vertical-align:middle;
+  background-repeat:no-repeat;background-size:contain;background-position:center;
 }
-.connect-card.spotify .ticker-inner span::after{content:url('../assets/img/spotify logo.png')}
-.connect-card.discord .ticker-inner span::after{content:url('../assets/img/discord logo.png')}
-.connect-card.patreon .ticker-inner span::after{content:url('../assets/img/patreon logo.png')}
+.connect-card.spotify .ticker-inner span::after{background-image:url('../assets/img/spotify logo.png')}
+.connect-card.discord .ticker-inner span::after{background-image:url('../assets/img/discord logo.png')}
+.connect-card.patreon .ticker-inner span::after{background-image:url('../assets/img/patreon logo.png')}
 .ticker-logo{width:.85em;height:.85em;object-fit:contain;display:inline-block}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .connect-body{padding:24px 28px;display:flex;justify-content:space-between;align-items:center;gap:18px}

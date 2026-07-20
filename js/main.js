@@ -86,6 +86,7 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     if (index < count)      index += count;
     snapTo(index, false);
     animating = false;
+    resume();
   };
   // Tant qu'un doigt touche la piste, le repli (scroll debounce) ci-dessous
   // ne doit jamais recaler dessus : le scroll continue en inertie après le
@@ -132,8 +133,7 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   window.addEventListener('mouseup', () => {
     if (!dragging) return;
     dragging = false;
-    resume();
-    settle();
+    settle(); // resume() est appelé depuis settle() une fois la position vraiment stabilisée
   });
 
   next?.addEventListener('click', () => move(1));
@@ -141,15 +141,20 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
 
   window.addEventListener('resize', () => snapTo(index, false));
 
-  // Défilement automatique (bouton "suivant") toutes les 2s, en pause au
-  // survol/tactile pour ne pas gêner la lecture.
-  let autoplay = setInterval(() => move(1), 2000);
+  // Défilement automatique (bouton "suivant") toutes les 2s. Inutile — et
+  // risqué — sur tactile : le réactiver à touchend entrait en conflit avec
+  // l'inertie du scroll encore active, ce qui pouvait figer le geste tactile.
+  // On le désactive donc entièrement sur les appareils sans souris, et on ne
+  // le réactive ailleurs qu'une fois settle() confirmé (scroll vraiment fini).
+  const hasFinePointer = window.matchMedia('(pointer:fine)').matches;
+  let autoplay = hasFinePointer ? setInterval(() => move(1), 2000) : null;
   const pause  = () => clearInterval(autoplay);
-  const resume = () => { pause(); autoplay = setInterval(() => move(1), 2000); };
+  const resume = () => {
+    pause();
+    if (hasFinePointer) autoplay = setInterval(() => move(1), 2000);
+  };
   carousel.addEventListener('mouseenter', pause);
   carousel.addEventListener('mouseleave', resume);
-  carousel.addEventListener('touchstart', pause, { passive: true });
-  carousel.addEventListener('touchend', resume);
 });
 
 // ---------- Lecteur audio (page Lore) ----------
