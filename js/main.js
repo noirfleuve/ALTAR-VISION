@@ -17,12 +17,12 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   // dépasse un bloc, on rembobine la position de la largeur d'un bloc,
   // sans transition, donc invisible → boucle infinie sans butée ni saut.
   originals.forEach((n) => track.appendChild(n.cloneNode(true)));
-  originals.forEach((n) => track.insertBefore(n.cloneNode(true), track.firstChild));
+  [...originals].reverse().forEach((n) => track.insertBefore(n.cloneNode(true), track.firstChild));
 
   track.style.overflow = 'hidden';          // on gère le défilement nous-mêmes
   track.style.scrollBehavior = 'auto';
 
-  let offset = 0;                            // décalage courant (px) depuis le bloc central
+  let offset = 0;                            // position courante (px) depuis le début de la piste
   let animating = false;
 
   const stepWidth = () => {
@@ -41,7 +41,7 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   };
 
   // Init : on place la piste sur le bloc central via transform.
-  const reset = () => { offset = 0; apply(false); };
+  const reset = () => { offset = baseScroll(); apply(false); };
   requestAnimationFrame(reset);
 
   const move = (dir) => {
@@ -52,11 +52,13 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   };
 
   // À la fin de l'animation, si on a dépassé un bloc complet dans un sens,
-  // on ré-emballe la position sans transition (invisible).
+  // on ré-emballe la position sans transition (invisible). Le bloc central
+  // commence à bw (= baseScroll()), donc les bornes de rebouclage sont
+  // [0, 2*bw] autour de cette position de base, pas [-bw, bw] autour de 0.
   track.addEventListener('transitionend', () => {
     const bw = blockWidth();
-    if (offset >= bw)  offset -= bw;
-    if (offset <= -bw) offset += bw;
+    if (offset >= 2 * bw) offset -= bw;
+    if (offset <= 0)      offset += bw;
     apply(false);
     animating = false;
   });
@@ -64,7 +66,7 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   next?.addEventListener('click', () => move(1));
   prev?.addEventListener('click', () => move(-1));
 
-  window.addEventListener('resize', () => { offset = 0; apply(false); });
+  window.addEventListener('resize', () => { offset = baseScroll(); apply(false); });
 });
 
 // ---------- Lecteur audio (page Lore) ----------
