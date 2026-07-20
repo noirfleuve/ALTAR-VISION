@@ -295,6 +295,13 @@ section{padding:clamp(64px,11vw,150px) 0}
 .carousel-nav.prev{left:-8px}
 .carousel-nav.next{right:-8px}
 
+/* home (desktop uniquement) : les boutons du carousel sont écartés pour ne
+   plus chevaucher les visuels, désormais de largeur variable selon l'image. */
+@media (min-width:761px){
+  #zenyth-aim .carousel-nav.prev{left:-64px}
+  #zenyth-aim .carousel-nav.next{right:-64px}
+}
+
 /* ---------- WAITLIST ---------- */
 .waitlist{
   margin-top:64px;background:var(--panel);
