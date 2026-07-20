@@ -13,7 +13,7 @@
 }
 
 :root{
-  --cursor:url('../assets/img/altar-cursor-40.png') 20 20,auto;
+  --cursor:url('../assets/img/altar-cursor-40.png') 0 0,auto;
   --bg:#000000;
   --bg-2:#0c0c0c;
   --panel:#111111;
