@@ -52,38 +52,54 @@ a,button,input,textarea,select,summary,label,
   cursor:var(--cursor) !important;
 }
 
-/* ---------- EFFET DE FOND (ovale scintillant) ---------- */
+/* ---------- EFFET DE FOND (ovale scintillant + lignes de scan) ---------- */
 body::before{
   content:"";
   position:fixed;
   top:50%;left:50%;
-  width:min(70vw,900px);
-  height:min(30vw,360px);
+  width:min(85vw,1150px);
+  height:min(38vw,460px);
   transform:translate(-50%,-50%);
   background:radial-gradient(ellipse at center, rgba(255,255,255,.3) 0%, rgba(255,255,255,.12) 45%, transparent 72%);
   pointer-events:none;
   z-index:-1;
   opacity:0;
   animation:
-    glow-breathe 8s ease-in-out infinite,
-    glow-flicker .5s linear infinite;
+    glow-breathe 4s ease-in-out infinite,
+    glow-flicker .3s linear infinite;
 }
-/* cycle lent : 2s pour apparaître, 2s pour disparaître, 4s invisible avant de recommencer */
+/* cycle : 2s pour apparaître, 2s pour disparaître, puis on relance aussitôt (plus de pause) */
 @keyframes glow-breathe{
-  0%,100%{opacity:0}
-  25%{opacity:1}
-  50%,99%{opacity:0}
+  0%{opacity:0}
+  50%{opacity:1}
+  100%{opacity:0}
 }
-/* scintillement rapide : la luminosité varie peu mais très vite, façon flash */
+/* scintillement très rapide, variation de luminosité modérée (+30%) */
 @keyframes glow-flicker{
   0%{filter:brightness(1)}
-  15%{filter:brightness(1.35)}
-  30%{filter:brightness(.92)}
-  50%{filter:brightness(1.25)}
-  68%{filter:brightness(1)}
-  82%{filter:brightness(1.3)}
+  20%{filter:brightness(1.3)}
+  40%{filter:brightness(.95)}
+  60%{filter:brightness(1.3)}
+  80%{filter:brightness(1)}
   100%{filter:brightness(1)}
 }
+
+/* lignes de scan statiques, très légères */
+body::after{
+  content:"";
+  position:fixed;inset:0;
+  pointer-events:none;
+  z-index:-1;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.2) 0px,
+    rgba(255,255,255,.2) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode:screen;
+}
+
 @media (prefers-reduced-motion:reduce){
   body::before{animation:none;opacity:0}
 }
