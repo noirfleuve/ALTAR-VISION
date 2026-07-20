@@ -86,8 +86,8 @@ body::after{
   position:fixed;
   top:50%;left:50%;
   transform:translate(-50%,-50%); /* base de secours si l'animation est coupée (reduced-motion) */
-  width:min(15vw,130px);
-  height:min(8.2vw,71px);
+  width:min(52.5vw,455px);
+  height:min(28.7vw,249px);
   margin:0;
   background-image:url('../assets/img/altar_logo.png');
   background-repeat:no-repeat;
@@ -473,7 +473,6 @@ section{padding:clamp(64px,11vw,150px) 0}
 .connect-card.spotify .ticker-inner span::after{background-image:url('../assets/img/spotify logo.png')}
 .connect-card.discord .ticker-inner span::after{background-image:url('../assets/img/discord logo.png')}
 .connect-card.patreon .ticker-inner span::after{background-image:url('../assets/img/patreon logo.png')}
-.ticker-logo{width:.85em;height:.85em;object-fit:contain;display:inline-block}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .connect-body{padding:24px 28px;display:flex;justify-content:space-between;align-items:center;gap:18px}
 .connect-body p{margin:0;color:var(--muted);max-width:60ch}
