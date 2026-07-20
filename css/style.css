@@ -171,6 +171,10 @@ a:hover{opacity:.6}
 .nav-links a[aria-current="page"]{color:var(--ink);border-bottom:2px solid var(--ink)}
 .nav-logo{display:flex;align-items:center}
 .nav-logo img{height:20px;width:auto;display:block}
+/* téléphone : le logo laisse toute la place aux 4 catégories */
+@media (max-width:600px){
+  .nav-logo{display:none}
+}
 
 /* ---------- LAYOUT ---------- */
 .wrap{max-width:1160px;margin:0 auto;padding:0 var(--pad)}
