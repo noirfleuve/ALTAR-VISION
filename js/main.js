@@ -17,20 +17,34 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   originals.forEach((n) => track.appendChild(n.cloneNode(true)));
   [...originals].reverse().forEach((n) => track.insertBefore(n.cloneNode(true), track.firstChild));
 
-  track.style.overflow = 'hidden';          // on masque le scroll natif à la souris/tactile...
-
-  // ...mais on continue d'utiliser scrollLeft (et non un transform calculé à
-  // la main) pour positionner la piste : le navigateur borne toujours cette
-  // valeur à une plage valide, donc une erreur de calcul ne peut jamais
-  // pousser le contenu hors champ indéfiniment — contrairement à un
-  // translateX() manuel, qui n'a aucune limite de sécurité intégrée.
+  // Le scroll natif reste actif (overflow-x:auto en CSS) : on pilote la
+  // piste via scrollLeft/scrollTo plutôt qu'un transform calculé à la main —
+  // le navigateur borne toujours cette valeur à une plage valide, donc une
+  // erreur de calcul ne peut jamais pousser le contenu hors champ. Ça permet
+  // aussi de laisser l'utilisateur glisser du doigt horizontalement (le
+  // scroll vertical de la page reste libre grâce à touch-action:pan-x en CSS).
   const items = () => Array.from(track.children); // 3 × count éléments
   let index = count;                                // item de tête = bloc central
   let animating = false;
+  let safetyTimer;
 
+  // Retrouve l'item le plus proche de la position réelle de la piste — utile
+  // après un glissement au doigt, qui ne passe pas par move() et ne met donc
+  // pas à jour "index" tant qu'on ne le recale pas ainsi.
+  const closestIndex = () => {
+    let best = index, bestDist = Infinity;
+    items().forEach((el, i) => {
+      const d = Math.abs(el.offsetLeft - track.scrollLeft);
+      if (d < bestDist) { bestDist = d; best = i; }
+    });
+    return best;
+  };
+
+  // scrollTo({behavior}) force explicitement l'instantané ou le fluide,
+  // sans dépendre du scroll-behavior CSS ambiant (plus fiable que de piloter
+  // track.style.scrollBehavior à la main, notamment sur mobile).
   const snapTo = (i, smooth) => {
-    track.style.scrollBehavior = smooth ? 'smooth' : 'auto';
-    track.scrollLeft = items()[i].offsetLeft;
+    track.scrollTo({ left: items()[i].offsetLeft, behavior: smooth ? 'smooth' : 'instant' });
   };
 
   // Init : on place la piste sur le bloc central. La largeur de chaque item
@@ -52,14 +66,22 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   const move = (dir) => {
     if (animating) return;
     animating = true;
-    index += dir;
+    index = closestIndex() + dir; // se recale d'abord sur un éventuel glissement au doigt
     snapTo(index, true);
+    // Filet de sécurité : si ni scrollend ni scroll ne se déclenchent (arrive
+    // sur certains navigateurs mobiles), on force le settle plutôt que de
+    // rester bloqué sur animating=true, ce qui rendrait les boutons inertes.
+    clearTimeout(safetyTimer);
+    safetyTimer = setTimeout(settle, 900);
   };
 
-  // Une fois le scroll fluide terminé, si on a dépassé le bloc central dans
-  // un sens, on rembobine l'index d'un bloc complet sans animation
-  // (invisible) vers l'item équivalent → boucle infinie sans butée.
+  // Une fois le scroll terminé (bouton, autoplay ou glissement au doigt), on
+  // se resynchronise sur la position réelle, puis si on a dépassé le bloc
+  // central dans un sens, on rembobine l'index d'un bloc complet sans
+  // animation (invisible) vers l'item équivalent → boucle infinie sans butée.
   const settle = () => {
+    clearTimeout(safetyTimer);
+    index = closestIndex();
     if (index >= 2 * count) index -= count;
     if (index < count)      index += count;
     snapTo(index, false);
