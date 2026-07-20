@@ -180,6 +180,9 @@ section{padding:clamp(64px,11vw,150px) 0}
   margin:clamp(8px,2vw,28px) auto;max-width:1160px;padding:0 var(--pad);
 }
 .sep::before,.sep::after{content:"";flex:1;height:1px;background:var(--line)}
+/* sep imbriqué dans un .wrap (ex: entre waitlist et "CONNECT WITH ALTAR") :
+   pas de double padding horizontal, doit occuper toute la largeur du .wrap. */
+.wrap > .sep{padding:0;max-width:none}
 
 /* ---------- TITRES ---------- */
 .h-display{
@@ -200,7 +203,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 .hero{
   min-height:calc(60svh - 60px);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;gap:26px;padding-top:8px;
+  text-align:center;gap:26px;padding-top:8px;padding-bottom:clamp(28px,5vw,64px);
 }
 .hero .brand{color:var(--ink);margin-bottom:0}
 .hero-logo{width:min(240px,45vw);margin:0 auto}
