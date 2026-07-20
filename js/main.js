@@ -93,6 +93,8 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   // On laisse scrollend (ou le debounce, une fois le doigt levé) détecter la
   // vraie fin du mouvement plutôt que de forcer un recalage à touchend.
   let touching = false;
+  let dragging = false;
+  const interacting = () => touching || dragging;
   track.addEventListener('touchstart', () => { touching = true; }, { passive: true });
   track.addEventListener('touchend', () => { touching = false; }, { passive: true });
   track.addEventListener('touchcancel', () => { touching = false; }, { passive: true });
@@ -100,15 +102,39 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   if ('onscrollend' in window) {
     // scrollend n'est émis qu'une fois le scroll (et son inertie) réellement
     // terminé, y compris après un geste tactile : pas besoin de vérifier "touching" ici.
-    track.addEventListener('scrollend', settle);
+    // On le garde tout de même pour le glisser-souris (pas d'inertie là, mais
+    // un scrollend parasite en plein milieu d'un drag doit être ignoré).
+    track.addEventListener('scrollend', () => { if (!dragging) settle(); });
   } else {
     // Repli pour les navigateurs sans l'évènement scrollend natif.
     let settleTimer;
     track.addEventListener('scroll', () => {
       clearTimeout(settleTimer);
-      settleTimer = setTimeout(() => { if (!touching) settle(); }, 150);
+      settleTimer = setTimeout(() => { if (!interacting()) settle(); }, 150);
     });
   }
+
+  // Glisser-déposer à la souris (desktop) : le contenu suit le curseur,
+  // exactement comme un swipe tactile. Contrairement au tactile, il n'y a
+  // pas d'inertie ici, donc on peut recaler immédiatement au relâchement.
+  let dragStartX = 0, dragStartScroll = 0;
+  track.addEventListener('mousedown', (e) => {
+    dragging = true;
+    dragStartX = e.clientX;
+    dragStartScroll = track.scrollLeft;
+    pause();
+    e.preventDefault(); // évite la sélection de texte et le drag natif des images
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    track.scrollLeft = dragStartScroll - (e.clientX - dragStartX);
+  });
+  window.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    resume();
+    settle();
+  });
 
   next?.addEventListener('click', () => move(1));
   prev?.addEventListener('click', () => move(-1));
