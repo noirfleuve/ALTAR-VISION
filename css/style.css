@@ -249,6 +249,9 @@ section{padding:clamp(64px,11vw,150px) 0}
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;gap:26px;padding-top:8px;padding-bottom:clamp(8px,2vw,24px);
 }
+/* altar corp : le titre n'a plus de gros logo au-dessus, donc même distance
+   au header que les titres media/lore (voir .media-intro / .lore-intro). */
+.corp-centered .hero{padding-top:clamp(70px,12vw,160px)}
 .hero .brand{color:var(--ink);margin-bottom:0}
 .hero-logo{width:min(240px,45vw);margin:0 auto}
 .cta-row{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
@@ -480,8 +483,8 @@ section{padding:clamp(64px,11vw,150px) 0}
 .connect-body .go{font-family:var(--display);color:var(--ink);letter-spacing:.1em;white-space:nowrap}
 
 /* ---------- LORE ---------- */
-.lore-intro{text-align:center;padding-top:clamp(90px,14vw,190px);padding-bottom:clamp(24px,4vw,56px)}
-.media-intro{padding-top:clamp(90px,14vw,190px)}
+.lore-intro{text-align:center;padding-top:clamp(70px,12vw,160px);padding-bottom:clamp(24px,4vw,56px)}
+.media-intro{padding-top:clamp(70px,12vw,160px)}
 .media-outro{padding-bottom:clamp(90px,14vw,190px)}
 .audio-player{
   max-width:640px;margin:52px auto 0;background:var(--panel);
