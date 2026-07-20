@@ -360,6 +360,7 @@ section{padding:clamp(64px,11vw,150px) 0}
   padding:clamp(16px,2.4vw,28px) clamp(26px,4vw,48px);text-align:center;
   position:relative;overflow:hidden;
 }
+.waitlist h3{margin-top:14px}
 /* même effet de lignes de scan que la sphère de fond, appliqué aux cases
    pleines (waitlist, bannières défilantes, bloc juste avant le footer) */
 .waitlist::before,.ticker::before,.crosslink::before{
@@ -479,7 +480,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 .connect-body .go{font-family:var(--display);color:var(--ink);letter-spacing:.1em;white-space:nowrap}
 
 /* ---------- LORE ---------- */
-.lore-intro{text-align:center;padding-top:clamp(90px,14vw,190px)}
+.lore-intro{text-align:center;padding-top:clamp(90px,14vw,190px);padding-bottom:clamp(24px,4vw,56px)}
 .media-intro{padding-top:clamp(90px,14vw,190px)}
 .media-outro{padding-bottom:clamp(90px,14vw,190px)}
 .audio-player{
