@@ -150,6 +150,34 @@ body::after{
   85%{opacity:.9}
   100%{transform:translateY(600px) rotate(200deg);opacity:0}
 }
+
+/* flash au clic : calque séparé de la sphère (body::before), positionné et
+   masqué à l'identique, pour pulser/illuminer sans jamais toucher — donc
+   sans jamais redémarrer — l'animation de respiration/scintillement en
+   cours de la sphère elle-même. Injecté par main.js, déclenché à chaque clic. */
+.bg-pulse{
+  position:fixed;
+  top:50%;left:50%;
+  width:var(--glow-w);
+  height:var(--glow-h);
+  transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse at center, rgba(255,255,255,.7) 0%, rgba(255,255,255,.3) 45%, transparent 72%);
+  mix-blend-mode:screen;
+  -webkit-mask-image:var(--glow-mask);
+          mask-image:var(--glow-mask);
+  pointer-events:none;
+  z-index:-1;
+  opacity:0;
+}
+.bg-pulse.active{animation:bg-pulse-flash .5s ease-out 1}
+@keyframes bg-pulse-flash{
+  0%{opacity:0;filter:brightness(1)}
+  15%{opacity:1;filter:brightness(1.6)}
+  100%{opacity:0;filter:brightness(1)}
+}
+@media (prefers-reduced-motion:reduce){
+  .bg-pulse{display:none}
+}
 /* téléphone : la sphère s'étire sur toute la largeur de l'écran. */
 @media (max-width:600px){
   :root{
@@ -160,7 +188,7 @@ body::after{
 /* cycle : 2s pour apparaître, 2s pour disparaître, puis on relance aussitôt (plus de pause) */
 @keyframes glow-breathe{
   0%{opacity:0}
-  50%{opacity:1}
+  50%{opacity:.9}
   100%{opacity:0}
 }
 /* scintillement très rapide, variation de luminosité modérée (+30%) */

@@ -261,6 +261,23 @@ document.querySelectorAll('[data-audio-player]').forEach((player) => {
   document.body.appendChild(container);
 })();
 
+// ---------- Pulsation de la sphère au clic ----------
+// Calque séparé (voir .bg-pulse dans style.css) : on ne touche jamais à
+// l'animation de la sphère elle-même, donc au clic elle flashe puis reprend
+// exactement là où elle en était dans son cycle respiration/scintillement.
+(() => {
+  const pulse = document.createElement('div');
+  pulse.className = 'bg-pulse';
+  pulse.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(pulse);
+
+  document.addEventListener('click', () => {
+    pulse.classList.remove('active');
+    void pulse.offsetWidth; // force le reflow pour pouvoir relancer l'animation sur des clics rapprochés
+    pulse.classList.add('active');
+  });
+})();
+
 // ---------- Parallaxe légère du fond selon la position de la souris ----------
 // Pilote --parallax-x/-y (lues par les keyframes glow-shake dans style.css),
 // avec un lissage (lerp) pour un mouvement fluide plutôt qu'un suivi 1:1.
