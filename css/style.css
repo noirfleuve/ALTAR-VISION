@@ -169,10 +169,10 @@ body::after{
   z-index:-1;
   opacity:0;
 }
-.bg-pulse.active{animation:bg-pulse-flash .5s ease-out 1}
+.bg-pulse.active{animation:bg-pulse-flash .6s ease-out 1}
 @keyframes bg-pulse-flash{
   0%{opacity:0;filter:brightness(1)}
-  15%{opacity:1;filter:brightness(1.6)}
+  16.7%{opacity:1;filter:brightness(1.6)}
   100%{opacity:0;filter:brightness(1)}
 }
 @media (prefers-reduced-motion:reduce){
