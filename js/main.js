@@ -1,6 +1,17 @@
 /* ALTAR VISION — main.js
    Carrousels (boucle infinie translatée) + lecteur audio de la page Lore. */
 
+// ---------- Curseur personnalisé : forcer son affichage après navigation ----------
+// Après un clic sur un lien du header, le navigateur garde souvent l'icône
+// du curseur précédent affichée jusqu'au premier mouvement de souris sur la
+// nouvelle page (l'icône n'est recalculée que sur un évènement de pointeur,
+// pas simplement au chargement). On force ce recalcul en togglant le curseur
+// du body sur deux frames consécutives dès le chargement.
+document.body.style.cursor = 'none';
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => { document.body.style.cursor = ''; });
+});
+
 // ---------- Carrousels (boucle infinie) ----------
 document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   const track = carousel.querySelector('.carousel-track');

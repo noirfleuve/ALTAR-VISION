@@ -481,6 +481,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 /* ---------- LORE ---------- */
 .lore-intro{text-align:center;padding-top:clamp(90px,14vw,190px)}
 .media-intro{padding-top:clamp(90px,14vw,190px)}
+.media-outro{padding-bottom:clamp(90px,14vw,190px)}
 .audio-player{
   max-width:640px;margin:52px auto 0;background:var(--panel);
   border:1px solid var(--line);border-radius:999px;
@@ -561,6 +562,10 @@ section{padding:clamp(64px,11vw,150px) 0}
 .corp-tagline{
   color:var(--muted);font-size:clamp(16px,2.2vw,21px);
   max-width:52ch;margin:0 auto;font-weight:500;
+}
+.steam-capsule{
+  width:min(90%,460px);border-radius:var(--radius);
+  border:1px solid var(--line-soft);
 }
 
 /* ---------- TRAILER ---------- */
