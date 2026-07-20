@@ -98,7 +98,7 @@ body::before{
 .bg-particle{
   position:absolute;
   top:-24px;left:0;
-  background:rgba(255,255,255,.55);
+  background:rgba(0,0,0,.65);
   animation:particle-fall linear infinite;
 }
 .bg-particle.cube{width:7px;height:7px}
@@ -111,6 +111,15 @@ body::before{
   10%{opacity:.9}
   85%{opacity:.9}
   100%{transform:translateY(600px) rotate(200deg);opacity:0}
+}
+/* téléphone : la sphère ne doit pas s'étirer pour couvrir toute la largeur
+   de l'écran (elle suit sinon 95vw) — on la fixe à une taille raisonnable
+   et constante, qui reste visuellement conséquente sans prendre l'écran. */
+@media (max-width:600px){
+  :root{
+    --glow-w:340px;
+    --glow-h:230px;
+  }
 }
 /* cycle : 2s pour apparaître, 2s pour disparaître, puis on relance aussitôt (plus de pause) */
 @keyframes glow-breathe{
