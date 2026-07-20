@@ -87,16 +87,20 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     snapTo(index, false);
     animating = false;
   };
-  // Tant qu'un doigt touche la piste, on ne recale jamais dessus : appeler
-  // scrollTo() pendant un glissement actif entre en conflit avec le scroll
-  // tactile natif du navigateur et peut le bloquer complètement.
+  // Tant qu'un doigt touche la piste, le repli (scroll debounce) ci-dessous
+  // ne doit jamais recaler dessus : le scroll continue en inertie après le
+  // relâchement, donc lever le doigt ne veut pas dire que le scroll est fini.
+  // On laisse scrollend (ou le debounce, une fois le doigt levé) détecter la
+  // vraie fin du mouvement plutôt que de forcer un recalage à touchend.
   let touching = false;
   track.addEventListener('touchstart', () => { touching = true; }, { passive: true });
-  track.addEventListener('touchend', () => { touching = false; settle(); });
-  track.addEventListener('touchcancel', () => { touching = false; settle(); });
+  track.addEventListener('touchend', () => { touching = false; }, { passive: true });
+  track.addEventListener('touchcancel', () => { touching = false; }, { passive: true });
 
   if ('onscrollend' in window) {
-    track.addEventListener('scrollend', () => { if (!touching) settle(); });
+    // scrollend n'est émis qu'une fois le scroll (et son inertie) réellement
+    // terminé, y compris après un geste tactile : pas besoin de vérifier "touching" ici.
+    track.addEventListener('scrollend', settle);
   } else {
     // Repli pour les navigateurs sans l'évènement scrollend natif.
     let settleTimer;
