@@ -103,9 +103,9 @@ section{padding:clamp(64px,11vw,150px) 0}
 
 /* ---------- HERO (home) ---------- */
 .hero{
-  min-height:calc(88svh - 60px);
+  min-height:calc(60svh - 60px);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;gap:26px;padding-top:40px;
+  text-align:center;gap:26px;padding-top:8px;
 }
 .hero .brand{color:var(--ink)}
 .hero-logo{width:min(240px,45vw);margin:0 auto}
@@ -221,7 +221,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 
 /* ---------- ABOUT ---------- */
 .about p{
-  font-size:clamp(19px,2.6vw,27px);line-height:1.55;font-weight:500;
+  font-size:clamp(15px,1.6vw,18px);line-height:1.6;font-weight:500;
   max-width:70ch;
   margin:0 0 1.6em;color:var(--ink);
 }
@@ -276,9 +276,9 @@ section{padding:clamp(64px,11vw,150px) 0}
 .connect-body .go{font-family:var(--display);color:var(--ink);letter-spacing:.1em;white-space:nowrap}
 
 /* ---------- LORE ---------- */
-.lore-intro{text-align:center}
+.lore-intro{text-align:center;padding-top:clamp(90px,14vw,190px)}
 .audio-player{
-  max-width:640px;margin:30px auto 0;background:var(--panel);
+  max-width:640px;margin:52px auto 0;background:var(--panel);
   border:1px solid var(--line);border-radius:999px;
   display:flex;align-items:center;gap:16px;padding:12px 22px;
 }
@@ -292,7 +292,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 .audio-bar-fill{position:absolute;inset:0 auto 0 0;width:0;background:var(--ink);border-radius:99px}
 .audio-time{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 
-.lore-text{max-width:860px;margin:0 auto}
+.lore-text{max-width:860px;margin:0 auto;padding-top:clamp(90px,14vw,190px)}
 .lore-text p{
   font-size:clamp(19px,2.4vw,25px);line-height:1.6;font-weight:500;
   margin:0 0 1.35em;
@@ -391,7 +391,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 
 /* ---------- CROSS-LIEN VERS LA MARQUE ---------- */
 .crosslink{
-  margin-top:44px;background:var(--panel);border:1px solid var(--line-soft);
+  margin-top:44px;margin-bottom:56px;background:var(--panel);border:1px solid var(--line-soft);
   border-radius:var(--radius);padding:clamp(24px,4vw,40px);
   display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
 }
