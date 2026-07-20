@@ -495,7 +495,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 .faq-a{
   display:grid;
   grid-template-rows:0fr;
-  transition:grid-template-rows .32s ease;
+  transition:grid-template-rows .2s ease;
 }
 .faq-item[open] .faq-a{grid-template-rows:1fr}
 .faq-a > *{overflow:hidden;min-height:0}
