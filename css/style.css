@@ -52,21 +52,26 @@ a,button,input,textarea,select,summary,label,
   cursor:var(--cursor) !important;
 }
 
-/* ---------- EFFET DE FOND (ovale scintillant + lignes de scan) ---------- */
+/* ---------- EFFET DE FOND (ovale scintillant, lignes de scan confinées à sa forme) ---------- */
 body::before{
   content:"";
   position:fixed;
   top:50%;left:50%;
   width:min(85vw,1150px);
   height:min(38vw,460px);
-  transform:translate(-50%,-50%);
-  background:radial-gradient(ellipse at center, rgba(255,255,255,.3) 0%, rgba(255,255,255,.12) 45%, transparent 72%);
+  background:
+    repeating-linear-gradient(to bottom, rgba(255,255,255,.2) 0px, rgba(255,255,255,.2) 1px, transparent 1px, transparent 3px),
+    radial-gradient(ellipse at center, rgba(255,255,255,.3) 0%, rgba(255,255,255,.12) 45%, transparent 72%);
+  -webkit-mask-image:radial-gradient(ellipse at center, #000 0%, #000 45%, transparent 72%);
+          mask-image:radial-gradient(ellipse at center, #000 0%, #000 45%, transparent 72%);
+  mix-blend-mode:screen;
   pointer-events:none;
   z-index:-1;
   opacity:0;
   animation:
     glow-breathe 4s ease-in-out infinite,
-    glow-flicker .3s linear infinite;
+    glow-flicker .3s linear infinite,
+    glow-shake .12s linear infinite;
 }
 /* cycle : 2s pour apparaître, 2s pour disparaître, puis on relance aussitôt (plus de pause) */
 @keyframes glow-breathe{
@@ -83,21 +88,12 @@ body::before{
   80%{filter:brightness(1)}
   100%{filter:brightness(1)}
 }
-
-/* lignes de scan statiques, très légères */
-body::after{
-  content:"";
-  position:fixed;inset:0;
-  pointer-events:none;
-  z-index:-1;
-  background:repeating-linear-gradient(
-    to bottom,
-    rgba(255,255,255,.2) 0px,
-    rgba(255,255,255,.2) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  mix-blend-mode:screen;
+/* tremblement rapide mais très léger : seule la vitesse est marquée, pas l'amplitude */
+@keyframes glow-shake{
+  0%,100%{transform:translate(-50%,-50%) translate(0,0)}
+  25%{transform:translate(-50%,-50%) translate(1.5px,-1px)}
+  50%{transform:translate(-50%,-50%) translate(-1px,1.5px)}
+  75%{transform:translate(-50%,-50%) translate(1px,1px)}
 }
 
 @media (prefers-reduced-motion:reduce){
