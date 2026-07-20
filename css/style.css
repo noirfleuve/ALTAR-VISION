@@ -172,7 +172,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 .carousel-nav{
   position:absolute;top:50%;transform:translateY(-50%);
   width:46px;height:46px;border-radius:0;border:none;
-  background-color:transparent;color:var(--ink);
+  background-color:var(--bg);color:var(--ink);
   background-repeat:no-repeat;
   background-image:
     linear-gradient(currentColor,currentColor),linear-gradient(currentColor,currentColor),
