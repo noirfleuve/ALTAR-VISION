@@ -498,6 +498,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 .audio-time{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 
 .lore-text{max-width:860px;margin:0 auto;padding-top:clamp(90px,14vw,190px)}
+.corp-story{padding-top:clamp(32px,6vw,72px)}
 .lore-text p{
   font-size:clamp(19px,2.4vw,25px);line-height:1.6;font-weight:500;
   margin:0 0 1.35em;
