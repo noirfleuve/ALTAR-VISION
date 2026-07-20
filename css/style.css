@@ -86,8 +86,8 @@ body::after{
   position:fixed;
   top:50%;left:50%;
   transform:translate(-50%,-50%); /* base de secours si l'animation est coupée (reduced-motion) */
-  width:min(52.5vw,455px);
-  height:min(28.7vw,249px);
+  width:min(115vw,1000px);
+  height:min(63vw,547px);
   margin:0;
   background-image:url('../assets/img/altar_logo.png');
   background-repeat:no-repeat;
@@ -103,7 +103,7 @@ body::after{
 }
 @keyframes logo-breathe{
   0%{opacity:0}
-  50%{opacity:.4}
+  50%{opacity:.36}
   100%{opacity:0}
 }
 /* animation dédiée (identique à glow-shake dans l'esprit) pour ne dépendre
