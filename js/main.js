@@ -87,14 +87,22 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     snapTo(index, false);
     animating = false;
   };
+  // Tant qu'un doigt touche la piste, on ne recale jamais dessus : appeler
+  // scrollTo() pendant un glissement actif entre en conflit avec le scroll
+  // tactile natif du navigateur et peut le bloquer complètement.
+  let touching = false;
+  track.addEventListener('touchstart', () => { touching = true; }, { passive: true });
+  track.addEventListener('touchend', () => { touching = false; settle(); });
+  track.addEventListener('touchcancel', () => { touching = false; settle(); });
+
   if ('onscrollend' in window) {
-    track.addEventListener('scrollend', settle);
+    track.addEventListener('scrollend', () => { if (!touching) settle(); });
   } else {
     // Repli pour les navigateurs sans l'évènement scrollend natif.
     let settleTimer;
     track.addEventListener('scroll', () => {
       clearTimeout(settleTimer);
-      settleTimer = setTimeout(settle, 150);
+      settleTimer = setTimeout(() => { if (!touching) settle(); }, 150);
     });
   }
 
