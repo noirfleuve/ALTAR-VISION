@@ -85,14 +85,20 @@ body::after{
   content:url('../assets/img/altar_logo.png');
   position:fixed;
   top:50%;left:50%;
-  width:min(26vw,240px);
+  transform:translate(-50%,-50%); /* base de secours si l'animation est coupée (reduced-motion) */
+  width:min(15vw,130px);
   filter:brightness(0);
   pointer-events:none;
   z-index:-1;
   opacity:0;
   animation:
-    glow-breathe 4s ease-in-out infinite,
+    logo-breathe 4s ease-in-out infinite,
     glow-shake .12s linear infinite;
+}
+@keyframes logo-breathe{
+  0%{opacity:0}
+  50%{opacity:.4}
+  100%{opacity:0}
 }
 
 /* particules (cubes/hexagones) tombant dans la sphère, injectées par main.js
@@ -227,7 +233,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 .hero{
   min-height:calc(60svh - 60px);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;gap:26px;padding-top:8px;padding-bottom:clamp(28px,5vw,64px);
+  text-align:center;gap:26px;padding-top:8px;padding-bottom:clamp(8px,2vw,24px);
 }
 .hero .brand{color:var(--ink);margin-bottom:0}
 .hero-logo{width:min(240px,45vw);margin:0 auto}
@@ -445,7 +451,13 @@ section{padding:clamp(64px,11vw,150px) 0}
   animation:ticker 14s linear infinite;
 }
 .ticker-inner span{margin-right:.8em;display:inline-flex;align-items:center;gap:.35em}
-.ticker-inner span::after{content:"✶";margin-left:.8em;font-size:.7em;vertical-align:middle}
+.ticker-inner span::after{
+  content:"";display:inline-block;width:.7em;height:.7em;
+  margin-left:.8em;vertical-align:middle;object-fit:contain;
+}
+.connect-card.spotify .ticker-inner span::after{content:url('../assets/img/spotify logo.png')}
+.connect-card.discord .ticker-inner span::after{content:url('../assets/img/discord logo.png')}
+.connect-card.patreon .ticker-inner span::after{content:url('../assets/img/patreon logo.png')}
 .ticker-logo{width:.85em;height:.85em;object-fit:contain;display:inline-block}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .connect-body{padding:24px 28px;display:flex;justify-content:space-between;align-items:center;gap:18px}
