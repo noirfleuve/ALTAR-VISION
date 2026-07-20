@@ -61,7 +61,7 @@ a:hover{opacity:.6}
 .nav{
   position:sticky;top:0;z-index:50;
   display:flex;align-items:center;justify-content:space-between;
-  padding:18px var(--pad);
+  padding:14px var(--pad);
   background:rgba(0,0,0,.88);
   backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line-soft);
@@ -75,7 +75,7 @@ a:hover{opacity:.6}
 .nav-links a:hover{color:var(--ink);opacity:1}
 .nav-links a[aria-current="page"]{color:var(--ink);border-bottom:2px solid var(--ink)}
 .nav-logo{display:flex;align-items:center}
-.nav-logo img{height:26px;width:auto;display:block}
+.nav-logo img{height:20px;width:auto;display:block}
 
 /* ---------- LAYOUT ---------- */
 .wrap{max-width:1160px;margin:0 auto;padding:0 var(--pad)}
@@ -252,7 +252,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 .gallery .frame img{width:75%}
 
 /* ---------- CONNECT CARDS (ticker défilant) ---------- */
-.connect-grid{display:grid;gap:22px;margin-top:32px}
+.connect-grid{display:grid;gap:22px;margin-top:32px;margin-bottom:56px}
 .connect-card{
   display:block;background:var(--bg);border:1px solid var(--line);
   border-radius:var(--radius);overflow:hidden;
