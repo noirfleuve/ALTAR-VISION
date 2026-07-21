@@ -28,12 +28,11 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   originals.forEach((n) => track.appendChild(n.cloneNode(true)));
   [...originals].reverse().forEach((n) => track.insertBefore(n.cloneNode(true), track.firstChild));
 
-  // Le scroll natif reste actif (overflow-x:auto en CSS) : on pilote la
-  // piste via scrollLeft/scrollTo plutôt qu'un transform calculé à la main —
-  // le navigateur borne toujours cette valeur à une plage valide, donc une
-  // erreur de calcul ne peut jamais pousser le contenu hors champ. Ça permet
-  // aussi de laisser l'utilisateur glisser du doigt horizontalement (le
-  // scroll vertical de la page reste libre grâce à touch-action:pan-x en CSS).
+  // On pilote la piste via scrollLeft/scrollTo plutôt qu'un transform calculé
+  // à la main : le navigateur borne toujours cette valeur à une plage valide,
+  // donc une erreur de calcul ne peut jamais pousser le contenu hors champ.
+  // Le scroll horizontal (glisser au doigt/à la souris) est géré explicitement
+  // en JS plus bas, avec verrouillage d'axe — voir le bloc pointerdown/move.
   const items = () => Array.from(track.children); // 3 × count éléments
   let index = count;                                // item de tête = bloc central
   let animating = false;
@@ -86,8 +85,8 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     safetyTimer = setTimeout(settle, 900);
   };
 
-  // Une fois le scroll terminé (bouton, autoplay ou glissement au doigt), on
-  // se resynchronise sur la position réelle, puis si on a dépassé le bloc
+  // Une fois le scroll terminé (bouton, autoplay ou glissement), on se
+  // resynchronise sur la position réelle, puis si on a dépassé le bloc
   // central dans un sens, on rembobine l'index d'un bloc complet sans
   // animation (invisible) vers l'item équivalent → boucle infinie sans butée.
   const settle = () => {
@@ -99,68 +98,71 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     animating = false;
     resume();
   };
-  // Tant qu'un doigt touche la piste, le repli (scroll debounce) ci-dessous
-  // ne doit jamais recaler dessus : le scroll continue en inertie après le
-  // relâchement, donc lever le doigt ne veut pas dire que le scroll est fini.
-  // On laisse scrollend (ou le debounce, une fois le doigt levé) détecter la
-  // vraie fin du mouvement plutôt que de forcer un recalage à touchend.
-  let touching = false;
-  let dragging = false;
-  const interacting = () => touching || dragging;
-  track.addEventListener('touchstart', () => { touching = true; }, { passive: true });
-  track.addEventListener('touchend', () => { touching = false; }, { passive: true });
-  track.addEventListener('touchcancel', () => { touching = false; }, { passive: true });
 
-  if ('onscrollend' in window) {
-    // scrollend n'est émis qu'une fois le scroll (et son inertie) réellement
-    // terminé, y compris après un geste tactile : pas besoin de vérifier "touching" ici.
-    // On le garde tout de même pour le glisser-souris (pas d'inertie là, mais
-    // un scrollend parasite en plein milieu d'un drag doit être ignoré).
-    track.addEventListener('scrollend', () => { if (!dragging) settle(); });
-  } else {
-    // Repli pour les navigateurs sans l'évènement scrollend natif.
-    let settleTimer;
-    track.addEventListener('scroll', () => {
-      clearTimeout(settleTimer);
-      settleTimer = setTimeout(() => { if (!interacting()) settle(); }, 150);
-    });
-  }
+  let dragging = false; // vrai seulement une fois l'axe verrouillé horizontal
+  track.addEventListener('scrollend', () => { if (!dragging) settle(); });
 
-  // Glisser-déposer à la souris (desktop uniquement — voir plus bas). Sur
-  // tactile, certains navigateurs synthétisent quand même des évènements
-  // souris pendant un geste, et un preventDefault() sur mousedown pouvait
-  // bloquer le scroll vertical de la page quand on appuyait sur le carousel.
-  const hasFinePointer = window.matchMedia('(pointer:fine)').matches;
-  let dragStartX = 0, dragStartScroll = 0;
-  if (hasFinePointer) {
-    track.addEventListener('mousedown', (e) => {
-      dragging = true;
-      dragStartX = e.clientX;
-      dragStartScroll = track.scrollLeft;
-      pause();
-      e.preventDefault(); // évite la sélection de texte et le drag natif des images
-    });
-    window.addEventListener('mousemove', (e) => {
-      if (!dragging) return;
-      track.scrollLeft = dragStartScroll - (e.clientX - dragStartX);
-    });
-    window.addEventListener('mouseup', () => {
-      if (!dragging) return;
+  // Glisser (souris + doigt, via l'API Pointer Events unifiée) avec
+  // verrouillage d'axe explicite : on ne décide QUE nous-mêmes si le geste
+  // est horizontal (→ on gère le scroll de la piste, preventDefault())
+  // ou vertical (→ on ne touche à rien, le navigateur scrolle la page
+  // normalement). C'est la technique utilisée par les vraies librairies de
+  // carousel : bien plus fiable que de compter sur touch-action pour que
+  // le navigateur laisse "passer" le vertical tout seul.
+  let pointerDown = false, startX = 0, startY = 0, startScroll = 0, axis = null;
+  const AXIS_THRESHOLD = 6; // px avant de trancher l'axe du geste
+
+  track.addEventListener('pointerdown', (e) => {
+    pointerDown = true;
+    axis = null;
+    startX = e.clientX;
+    startY = e.clientY;
+    startScroll = track.scrollLeft;
+  });
+
+  track.addEventListener('pointermove', (e) => {
+    if (!pointerDown) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    if (axis === null && (Math.abs(dx) > AXIS_THRESHOLD || Math.abs(dy) > AXIS_THRESHOLD)) {
+      axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      if (axis === 'x') {
+        dragging = true;
+        pause();
+        track.setPointerCapture(e.pointerId);
+      }
+    }
+
+    if (axis === 'x') {
+      e.preventDefault(); // on gère le scroll horizontal nous-mêmes
+      track.scrollLeft = startScroll - dx;
+    }
+    // axis === 'y' (ou pas encore tranché) → on ne fait rien : le geste
+    // reste un scroll de page tout à fait normal, jamais intercepté.
+  }, { passive: false });
+
+  const endPointer = () => {
+    if (!pointerDown) return;
+    pointerDown = false;
+    axis = null;
+    if (dragging) {
       dragging = false;
       settle(); // resume() est appelé depuis settle() une fois la position vraiment stabilisée
-    });
-  }
+    }
+  };
+  track.addEventListener('pointerup', endPointer);
+  track.addEventListener('pointercancel', endPointer);
 
   next?.addEventListener('click', () => move(1));
   prev?.addEventListener('click', () => move(-1));
 
   window.addEventListener('resize', () => snapTo(index, false));
 
-  // Défilement automatique (bouton "suivant") toutes les 2s. Inutile — et
-  // risqué — sur tactile : le réactiver à touchend entrait en conflit avec
-  // l'inertie du scroll encore active, ce qui pouvait figer le geste tactile.
-  // On le désactive donc entièrement sur les appareils sans souris, et on ne
-  // le réactive ailleurs qu'une fois settle() confirmé (scroll vraiment fini).
+  // Défilement automatique (bouton "suivant") toutes les 2s. Désactivé sur
+  // les appareils sans souris : inutile une fois qu'on navigue au doigt, et
+  // le relancer au mauvais moment a par le passé perturbé le scroll tactile.
+  const hasFinePointer = window.matchMedia('(pointer:fine)').matches;
   let autoplay = hasFinePointer ? setInterval(() => move(1), 2000) : null;
   const pause  = () => clearInterval(autoplay);
   const resume = () => {
