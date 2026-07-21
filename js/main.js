@@ -275,6 +275,15 @@ document.querySelectorAll('[data-audio-player]').forEach((player) => {
   }
 })();
 
+// ---------- Dissuader clic droit / glisser-déposer sur les images du site ----------
+// Ne bloque que le menu contextuel et le drag natif du navigateur — n'empêche
+// pas l'inspecteur/devtools, qui reste toujours capable de récupérer une image.
+document.querySelectorAll('img').forEach((img) => {
+  img.setAttribute('draggable', 'false');
+  img.addEventListener('contextmenu', (e) => e.preventDefault());
+  img.addEventListener('dragstart', (e) => e.preventDefault());
+});
+
 // ---------- Parallaxe légère du fond selon la position de la souris ----------
 // Pilote --parallax-x/-y (lues par les keyframes glow-shake dans style.css),
 // avec un lissage (lerp) pour un mouvement fluide plutôt qu'un suivi 1:1.
