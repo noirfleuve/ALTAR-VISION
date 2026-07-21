@@ -243,9 +243,18 @@ a:hover{opacity:.6}
 .nav-links a[aria-current="page"]{color:var(--ink);border-bottom:2px solid var(--ink)}
 .nav-logo{display:flex;align-items:center}
 .nav-logo img{height:20px;width:auto;display:block}
-/* téléphone : le logo laisse toute la place aux 4 catégories */
+/* téléphone : le logo laisse toute la place aux 4 catégories, qui passent
+   sur 2 lignes proprement (plutôt que de se compresser et faire retourner
+   "ALTAR CORP" à la ligne au milieu du mot) et restent bien centrées. */
 @media (max-width:600px){
   .nav-logo{display:none}
+  .nav{justify-content:center}
+  .nav-links{flex-wrap:wrap;justify-content:center;row-gap:8px}
+}
+/* ordinateur : léger espace au-dessus des catégories pour un centrage plus
+   équilibré dans le header. */
+@media (min-width:601px){
+  .nav-links{padding-top:3px}
 }
 
 /* ---------- LAYOUT ---------- */
