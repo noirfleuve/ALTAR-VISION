@@ -101,58 +101,77 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
 
   let dragging = false; // vrai seulement une fois l'axe verrouillé horizontal
   track.addEventListener('scrollend', () => { if (!dragging) settle(); });
+  const hasFinePointer = window.matchMedia('(pointer:fine)').matches;
 
-  // Glisser (souris + doigt, via l'API Pointer Events unifiée) avec
-  // verrouillage d'axe explicite : on ne décide QUE nous-mêmes si le geste
-  // est horizontal (→ on gère le scroll de la piste, preventDefault())
-  // ou vertical (→ on ne touche à rien, le navigateur scrolle la page
-  // normalement). C'est la technique utilisée par les vraies librairies de
-  // carousel : bien plus fiable que de compter sur touch-action pour que
-  // le navigateur laisse "passer" le vertical tout seul.
-  let pointerDown = false, startX = 0, startY = 0, startScroll = 0, axis = null;
+  // Glisser à la souris (desktop). Gardé séparé du tactile ci-dessous : sur
+  // certains navigateurs mobiles, les évènements souris "synthétiques" créés
+  // pendant un geste tactile ont par le passé cassé le scroll — donc on
+  // n'attache carrément jamais ce code sur un appareil sans souris.
+  if (hasFinePointer) {
+    let dragStartX = 0, dragStartScroll = 0;
+    track.addEventListener('mousedown', (e) => {
+      dragging = true;
+      dragStartX = e.clientX;
+      dragStartScroll = track.scrollLeft;
+      pause();
+      e.preventDefault(); // évite la sélection de texte et le drag natif des images
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      track.scrollLeft = dragStartScroll - (e.clientX - dragStartX);
+    });
+    window.addEventListener('mouseup', () => {
+      if (!dragging) return;
+      dragging = false;
+      settle();
+    });
+  }
+
+  // Glisser au doigt (tactile), avec verrouillage d'axe explicite : on ne
+  // décide QUE nous-mêmes si le geste est horizontal (→ on gère le scroll de
+  // la piste, preventDefault()) ou vertical (→ on ne touche à rien, le
+  // navigateur scrolle la page normalement). On utilise les évènements
+  // tactiles "bruts" (touchstart/move/end) plutôt que Pointer Events : plus
+  // anciens mais bien plus prévisibles d'un navigateur mobile à l'autre pour
+  // ce cas précis.
+  let touchStartX = 0, touchStartY = 0, touchStartScroll = 0, touchAxis = null;
   const AXIS_THRESHOLD = 6; // px avant de trancher l'axe du geste
 
-  track.addEventListener('pointerdown', (e) => {
-    pointerDown = true;
-    axis = null;
-    startX = e.clientX;
-    startY = e.clientY;
-    startScroll = track.scrollLeft;
-  });
+  track.addEventListener('touchstart', (e) => {
+    const t = e.touches[0];
+    touchStartX = t.clientX;
+    touchStartY = t.clientY;
+    touchStartScroll = track.scrollLeft;
+    touchAxis = null;
+  }, { passive: true });
 
-  track.addEventListener('pointermove', (e) => {
-    if (!pointerDown) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
+  track.addEventListener('touchmove', (e) => {
+    const t = e.touches[0];
+    const dx = t.clientX - touchStartX;
+    const dy = t.clientY - touchStartY;
 
-    if (axis === null && (Math.abs(dx) > AXIS_THRESHOLD || Math.abs(dy) > AXIS_THRESHOLD)) {
-      axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-      if (axis === 'x') {
-        dragging = true;
-        pause();
-        track.setPointerCapture(e.pointerId);
-      }
+    if (touchAxis === null && (Math.abs(dx) > AXIS_THRESHOLD || Math.abs(dy) > AXIS_THRESHOLD)) {
+      touchAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      if (touchAxis === 'x') { dragging = true; pause(); }
     }
 
-    if (axis === 'x') {
+    if (touchAxis === 'x') {
       e.preventDefault(); // on gère le scroll horizontal nous-mêmes
-      track.scrollLeft = startScroll - dx;
+      track.scrollLeft = touchStartScroll - dx;
     }
-    // axis === 'y' (ou pas encore tranché) → on ne fait rien : le geste
+    // touchAxis === 'y' (ou pas encore tranché) → on ne fait rien : le geste
     // reste un scroll de page tout à fait normal, jamais intercepté.
   }, { passive: false });
 
-  const endPointer = () => {
-    if (!pointerDown) return;
-    pointerDown = false;
-    axis = null;
+  const endTouch = () => {
+    touchAxis = null;
     if (dragging) {
       dragging = false;
-      settle(); // resume() est appelé depuis settle() une fois la position vraiment stabilisée
+      settle();
     }
   };
-  track.addEventListener('pointerup', endPointer);
-  track.addEventListener('pointercancel', endPointer);
+  track.addEventListener('touchend', endTouch, { passive: true });
+  track.addEventListener('touchcancel', endTouch, { passive: true });
 
   next?.addEventListener('click', () => move(1));
   prev?.addEventListener('click', () => move(-1));
@@ -162,7 +181,6 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   // Défilement automatique (bouton "suivant") toutes les 2s. Désactivé sur
   // les appareils sans souris : inutile une fois qu'on navigue au doigt, et
   // le relancer au mauvais moment a par le passé perturbé le scroll tactile.
-  const hasFinePointer = window.matchMedia('(pointer:fine)').matches;
   let autoplay = hasFinePointer ? setInterval(() => move(1), 2000) : null;
   const pause  = () => clearInterval(autoplay);
   const resume = () => {
