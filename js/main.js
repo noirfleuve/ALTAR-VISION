@@ -135,7 +135,8 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   // anciens mais bien plus prévisibles d'un navigateur mobile à l'autre pour
   // ce cas précis.
   let touchStartX = 0, touchStartY = 0, touchStartScroll = 0, touchAxis = null;
-  const AXIS_THRESHOLD = 6; // px avant de trancher l'axe du geste
+  const AXIS_THRESHOLD = 6;   // px avant de trancher l'axe du geste
+  const TOUCH_SENSITIVITY = 2.2; // >1 : la piste avance plus vite que le doigt
 
   track.addEventListener('touchstart', (e) => {
     const t = e.touches[0];
@@ -157,7 +158,7 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
 
     if (touchAxis === 'x') {
       e.preventDefault(); // on gère le scroll horizontal nous-mêmes
-      track.scrollLeft = touchStartScroll - dx;
+      track.scrollLeft = touchStartScroll - dx * TOUCH_SENSITIVITY;
     }
     // touchAxis === 'y' (ou pas encore tranché) → on ne fait rien : le geste
     // reste un scroll de page tout à fait normal, jamais intercepté.
@@ -178,14 +179,14 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
 
   window.addEventListener('resize', () => snapTo(index, false));
 
-  // Défilement automatique (bouton "suivant") toutes les 2s. Désactivé sur
-  // les appareils sans souris : inutile une fois qu'on navigue au doigt, et
-  // le relancer au mauvais moment a par le passé perturbé le scroll tactile.
-  let autoplay = hasFinePointer ? setInterval(() => move(1), 2000) : null;
+  // Défilement automatique (bouton "suivant") toutes les 2s, sur tous les
+  // appareils. La reprise ne se fait que depuis settle() (scroll vraiment
+  // stabilisé), jamais en plein milieu d'un geste tactile encore actif.
+  let autoplay = setInterval(() => move(1), 2000);
   const pause  = () => clearInterval(autoplay);
   const resume = () => {
     pause();
-    if (hasFinePointer) autoplay = setInterval(() => move(1), 2000);
+    autoplay = setInterval(() => move(1), 2000);
   };
   carousel.addEventListener('mouseenter', pause);
   carousel.addEventListener('mouseleave', resume);
