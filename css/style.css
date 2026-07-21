@@ -172,17 +172,22 @@ body::after{
 .bg-pulse.active{animation:bg-pulse-flash .6s ease-out 1}
 @keyframes bg-pulse-flash{
   0%{opacity:0;filter:brightness(1)}
-  16.7%{opacity:1;filter:brightness(1.6)}
+  16.7%{opacity:.6;filter:brightness(1.3)}
   100%{opacity:0;filter:brightness(1)}
 }
 @media (prefers-reduced-motion:reduce){
   .bg-pulse{display:none}
 }
-/* téléphone : la sphère s'étire sur toute la largeur de l'écran. */
+/* téléphone : la sphère s'étire sur toute la largeur de l'écran, et le logo
+   (dimensionné en dur, pas via --glow-w/-h) est réduit en conséquence. */
 @media (max-width:600px){
   :root{
     --glow-w:100vw;
     --glow-h:230px;
+  }
+  body::after{
+    width:160px;
+    height:87px;
   }
 }
 /* cycle : 2s pour apparaître, 2s pour disparaître, puis on relance aussitôt (plus de pause) */
@@ -332,7 +337,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 .carousel{position:relative}
 .carousel-track{
   display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;
-  align-items:center;touch-action:pan-x;-webkit-overflow-scrolling:touch;
+  align-items:center;touch-action:pan-x;
   padding:6px 2px 18px;scrollbar-width:none;
 }
 .carousel-track::-webkit-scrollbar{display:none}
