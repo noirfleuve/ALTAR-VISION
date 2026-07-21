@@ -346,7 +346,7 @@ section{padding:clamp(64px,11vw,150px) 0}
 .carousel{position:relative}
 .carousel-track{
   display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;
-  align-items:center;touch-action:pan-y;
+  align-items:center;touch-action:pan-x;
   padding:6px 2px 18px;scrollbar-width:none;
 }
 .carousel-track::-webkit-scrollbar{display:none}
