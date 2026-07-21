@@ -90,8 +90,12 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   const settle = () => {
     clearTimeout(safetyTimer);
     index = closestIndex();
-    if (index >= 2 * count) index -= count;
-    if (index < count)      index += count;
+    // while, pas if : un scroll natif rapide/long (flick) peut dériver de
+    // PLUSIEURS blocs d'un coup, pas juste un seul — avec un simple "if", un
+    // index resté hors de la plage valide finissait par planter items()[index]
+    // (undefined) sur les glissements suivants, ce qui bloquait le carousel.
+    while (index >= 2 * count) index -= count;
+    while (index < count)      index += count;
     snapTo(index, false);
     animating = false;
     resume();

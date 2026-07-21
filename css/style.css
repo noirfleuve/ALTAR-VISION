@@ -345,13 +345,13 @@ section{padding:clamp(64px,11vw,150px) 0}
    propres proportions (largeur automatique, jamais recadrée). */
 .carousel{position:relative}
 .carousel-track{
-  display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;
+  display:flex;gap:18px;overflow-x:auto;
   align-items:center;touch-action:pan-x;
   padding:6px 2px 18px;scrollbar-width:none;
 }
 .carousel-track::-webkit-scrollbar{display:none}
 .carousel-item{
-  flex:0 0 auto;scroll-snap-align:center;
+  flex:0 0 auto;
   background:var(--bg-2);border-radius:var(--radius);overflow:hidden;
   height:clamp(240px,42vw,420px);
 }
