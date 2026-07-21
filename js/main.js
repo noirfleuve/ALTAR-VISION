@@ -114,7 +114,8 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     });
   }
 
-  // Glisser à la souris (desktop uniquement).
+  // Sur tactile : aucun JS, scroll horizontal 100% natif (overflow-x +
+  // touch-action:pan-x en CSS).
   const hasFinePointer = window.matchMedia('(pointer:fine)').matches;
   if (hasFinePointer) {
     let dragStartX = 0, dragStartScroll = 0;
@@ -135,46 +136,6 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
       settle();
     });
   }
-
-  // Glisser au doigt : le CSS (touch-action:pan-y) garantit au navigateur
-  // qu'IL gère nativement le vertical sur cet élément — ce n'est plus une
-  // question de "laisser passer" un axe non revendiqué, c'est une revendication
-  // explicite de l'autre axe (pan-y), donc sans ambiguïté possible. En
-  // contrepartie, l'horizontal n'est plus natif du tout : on le gère nous-
-  // mêmes ci-dessous, dès le premier pixel de mouvement, en 1:1 avec le doigt.
-  let touchStartX = 0, touchStartY = 0, touchStartScroll = 0, touchAxis = null;
-  track.addEventListener('touchstart', (e) => {
-    const t = e.touches[0];
-    touchStartX = t.clientX;
-    touchStartY = t.clientY;
-    touchStartScroll = track.scrollLeft;
-    touchAxis = null;
-  }, { passive: true });
-
-  track.addEventListener('touchmove', (e) => {
-    const t = e.touches[0];
-    const dx = t.clientX - touchStartX;
-    const dy = t.clientY - touchStartY;
-
-    if (touchAxis === null && (dx !== 0 || dy !== 0)) {
-      touchAxis = Math.abs(dx) >= Math.abs(dy) ? 'x' : 'y';
-      if (touchAxis === 'x') { dragging = true; pause(); }
-    }
-
-    if (touchAxis === 'x') {
-      e.preventDefault();
-      track.scrollLeft = touchStartScroll - dx;
-    }
-    // touchAxis === 'y' → on ne fait rien : touch-action:pan-y garantit que
-    // le navigateur scrolle la page nativement, aucun JS requis ici.
-  }, { passive: false });
-
-  const endTouch = () => {
-    touchAxis = null;
-    if (dragging) { dragging = false; settle(); }
-  };
-  track.addEventListener('touchend', endTouch, { passive: true });
-  track.addEventListener('touchcancel', endTouch, { passive: true });
 
   next?.addEventListener('click', () => move(1));
   prev?.addEventListener('click', () => move(-1));
