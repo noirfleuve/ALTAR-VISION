@@ -49,12 +49,6 @@ a,button,input,textarea,select,summary,label,
   cursor:var(--cursor);
 }
 
-/* forcer le curseur même sur le widget embarqué Klaviyo (waitlist) */
-.klaviyo-form-U7bA4R,
-.klaviyo-form-U7bA4R *{
-  cursor:var(--cursor) !important;
-}
-
 /* ---------- EFFET DE FOND (ovale scintillant, lignes de scan confinées à sa forme) ---------- */
 body::before{
   content:"";
