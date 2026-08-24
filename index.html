@@ -18,9 +18,6 @@
   <link rel="preload" href="assets/fonts/Mikadan_Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="css/style.css">
 
-  <!-- KLAVIYO — company_id (clé publique / site ID) : Wx3sCF -->
-  <script async src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=Wx3sCF"></script>
-
   <!-- GoatCounter — analytics -->
   <script data-goatcounter="https://altarvision.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
@@ -72,7 +69,14 @@
       <div class="waitlist">
         <h3 class="h-display h-md">DROP SOON, DON'T MISS OUT:</h3>
 
-        <div class="klaviyo-form-U7bA4R"></div>
+        <!-- Formulaire natif : envoie directement à l'API Klaviyo (voir js/main.js),
+             pas de script tiers klaviyo.com chargé donc rien pour les ad-blockers à bloquer. -->
+        <p class="form-offer">GET 5% OFF + EARLY ACCESS</p>
+        <form class="waitlist-form" id="waitlist-form" novalidate>
+          <input type="email" name="email" placeholder="Email" required autocomplete="email">
+          <button type="submit" class="btn btn-solid">CLAIM ACCESS</button>
+        </form>
+        <p class="form-status" id="waitlist-status" role="status" aria-live="polite"></p>
 
         <p class="form-note">After submitting, don't forget to check your emails to confirm your subscription. If you already subscribed for the ZENYTH OUTFITS, you do not need to subscribe a second time for the ZENYTH PLUSHIES.</p>
       </div>

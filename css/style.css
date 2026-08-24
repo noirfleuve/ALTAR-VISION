@@ -420,6 +420,10 @@ section{padding:clamp(64px,11vw,150px) 0}
   from{background-position-y:0}
   to{background-position-y:3px}
 }
+.form-offer{
+  font-family:var(--display);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink);margin:14px 0 0;
+}
 .waitlist-form{
   display:flex;gap:12px;max-width:520px;margin:22px auto 0;flex-wrap:wrap;justify-content:center;
 }
@@ -430,6 +434,9 @@ section{padding:clamp(64px,11vw,150px) 0}
 }
 .waitlist-form input::placeholder{color:var(--muted)}
 .waitlist-form input:focus{outline:none;border-color:var(--ink)}
+.waitlist-form .btn{padding:14px 28px}
+.waitlist-form .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;filter:none}
+.form-status{color:var(--ink);font-size:13px;margin-top:12px;min-height:1em}
 .form-note{color:var(--muted);font-size:13px;margin-top:16px}
 
 /* ---------- BANNIÈRES BAS DE HOME ---------- */

@@ -281,3 +281,68 @@ document.querySelectorAll('img').forEach((img) => {
   };
   requestAnimationFrame(tick);
 })();
+
+// ---------- Waitlist -> Klaviyo (formulaire natif, sans script tiers) ----------
+// On appelle directement l'API publique "Client" de Klaviyo (documentée pour
+// les formulaires custom) au lieu de charger le widget klaviyo.js : ce dernier
+// est bloqué par défaut par la plupart des ad-blockers/anti-tracking, ce qui
+// rendait le formulaire invisible pour une partie des visiteurs.
+(() => {
+  const form = document.getElementById('waitlist-form');
+  if (!form) return;
+  const status = document.getElementById('waitlist-status');
+
+  const KLAVIYO_COMPANY_ID = 'Wx3sCF';
+  const KLAVIYO_LIST_ID = 'UjdDbS';
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = form.email.value.trim();
+    if (!email) return;
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    status.textContent = 'Sending…';
+
+    try {
+      const res = await fetch(`https://a.klaviyo.com/client/subscriptions/?company_id=${KLAVIYO_COMPANY_ID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/vnd.api+json',
+          'Revision': '2024-10-15',
+        },
+        body: JSON.stringify({
+          data: {
+            type: 'subscription',
+            attributes: {
+              profile: {
+                data: {
+                  type: 'profile',
+                  attributes: {
+                    email,
+                  },
+                },
+              },
+              custom_source: 'Website waitlist form',
+            },
+            relationships: {
+              list: { data: { type: 'list', id: KLAVIYO_LIST_ID } },
+            },
+          },
+        }),
+      });
+
+      if (res.ok) {
+        form.reset();
+        status.textContent = "Thanks! Check your email to confirm your subscription.";
+      } else {
+        status.textContent = 'Something went wrong, please try again.';
+      }
+    } catch (err) {
+      status.textContent = 'Something went wrong, please try again.';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+})();
