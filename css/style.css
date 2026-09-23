@@ -704,3 +704,26 @@ section{padding:clamp(64px,11vw,150px) 0}
 
 /* le carrousel infini : masque la barre de défilement, garde le snap */
 .carousel-track{scroll-behavior:smooth}
+
+/* ============================================================
+   MERCH LAUNCH (home) — bouton SHOP NOW + retouches spacing
+   ============================================================ */
+.home-centered .hero{padding-bottom:0;min-height:calc(48svh - 60px)}
+.home-centered .hero + .sep{margin-top:-14px}
+.home-centered .hero-logo{width:min(160px,32vw)}
+
+.btn-shop{
+  font-size:22px;
+  letter-spacing:.14em;
+  padding:18px 62px;
+  background-color:#000;
+  color:#fff;
+}
+
+#zenyth-aim .carousel{margin:clamp(34px,6vw,64px) 0}
+#zenyth-aim > h2.h-display{margin-top:12px;margin-bottom:.85em}
+
+@media (max-width:600px){
+  .home-centered .hero{min-height:auto;padding-top:6px;gap:16px}
+  .home-centered .hero + .sep{margin-top:6px}
+}
