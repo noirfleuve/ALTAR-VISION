@@ -1,2 +1,6 @@
 # Page de test locale "merch launch" — ne jamais committer / publier
 merch-launch.html
+
+# Photos originales haute résolution (non optimisées pour le web) —
+# versions compressées utilisées sur le site dans assets/img/
+assets/img/_originals/
