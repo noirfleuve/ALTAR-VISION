@@ -348,8 +348,8 @@ document.querySelectorAll('img').forEach((img) => {
 })();
 
 /* ---------- LIVE LISTENERS (page music) ----------
-   Nombre affiché entre MIN et MAX ; il bouge de ±1 à 3 toutes les 4 à 9 s
-   pour une évolution naturelle. Ajuster MIN / MAX si la fourchette réelle change. */
+   Nombre affiché entre MIN et MAX ; il bouge de ±1 ou 2 toutes les 5 à 10 s
+   pour une évolution douce. Ajuster MIN / MAX si la fourchette réelle change. */
 (() => {
   const el = document.querySelector('[data-live-listeners]');
   if (!el) return;
@@ -358,9 +358,9 @@ document.querySelectorAll('img').forEach((img) => {
   let n = rand(MIN, MAX);
   el.textContent = n;
   const tick = () => {
-    n = Math.min(MAX, Math.max(MIN, n + rand(-3, 3)));
+    n = Math.min(MAX, Math.max(MIN, n + rand(-2, 2)));
     el.textContent = n;
-    setTimeout(tick, rand(4000, 9000));
+    setTimeout(tick, rand(5000, 10000));
   };
-  setTimeout(tick, rand(4000, 9000));
+  setTimeout(tick, rand(5000, 10000));
 })();
