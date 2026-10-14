@@ -346,3 +346,21 @@ document.querySelectorAll('img').forEach((img) => {
     }
   });
 })();
+
+/* ---------- LIVE LISTENERS (page music) ----------
+   Nombre affiché entre MIN et MAX ; il bouge de ±1 à 3 toutes les 4 à 9 s
+   pour une évolution naturelle. Ajuster MIN / MAX si la fourchette réelle change. */
+(() => {
+  const el = document.querySelector('[data-live-listeners]');
+  if (!el) return;
+  const MIN = 20, MAX = 73;
+  const rand = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  let n = rand(MIN, MAX);
+  el.textContent = n;
+  const tick = () => {
+    n = Math.min(MAX, Math.max(MIN, n + rand(-3, 3)));
+    el.textContent = n;
+    setTimeout(tick, rand(4000, 9000));
+  };
+  setTimeout(tick, rand(4000, 9000));
+})();
