@@ -751,3 +751,5 @@ section{padding:clamp(64px,11vw,150px) 0}
 .wave i:nth-child(4){animation-delay:-.2s}
 @keyframes wave{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
 @media (prefers-reduced-motion:reduce){.wave i{animation:none;transform:scaleY(.7)}}
+#stream-now > h2.h-display{margin-bottom:.85em}
+#stream-now .platform-row{margin-bottom:0}
