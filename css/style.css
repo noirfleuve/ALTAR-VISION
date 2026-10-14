@@ -712,7 +712,7 @@ section{padding:clamp(64px,11vw,150px) 0}
    ============================================================ */
 
 /* hero : logo rapproché du titre ; pas de hauteur minimale, pour que
-   l'écart titre → STREAM NOW soit fixé par #stream-now (80–120px) */
+   l'écart titre → STREAM NOW soit fixé par #stream-now */
 .home-centered .hero{min-height:0;padding-top:clamp(40px,7vw,90px);padding-bottom:0;gap:12px}
 .home-centered .hero-logo{width:min(160px,32vw)}
 
@@ -724,8 +724,8 @@ section{padding:clamp(64px,11vw,150px) 0}
 }
 
 /* espacements entre sections (remplacent les séparateurs) */
-#stream-now{padding-top:clamp(80px,10vw,120px);padding-bottom:0}
-#zenyth-aim{padding-top:clamp(72px,9vw,110px)}
+#stream-now{padding-top:clamp(48px,6vw,72px);padding-bottom:0}
+#zenyth-aim{padding-top:clamp(48px,6vw,72px)}
 #zenyth-aim > h3.h-display{margin-top:clamp(72px,9vw,110px)}
 
 /* icônes de streaming */
@@ -749,6 +749,11 @@ section{padding:clamp(64px,11vw,150px) 0}
 }
 .platform-icon:hover::after,.platform-icon:focus-visible::after{opacity:.8}
 @media (hover:none){.platform-icon::after{display:none}}
+/* section STREAM NOW agrandie : label et icônes plus grands */
+#stream-now .section-label{font-size:clamp(18px,2vw,24px);margin-bottom:32px}
+#stream-now .platform-icons{gap:clamp(28px,4vw,44px)}
+#stream-now .platform-icon svg{width:clamp(34px,4vw,42px);height:clamp(34px,4vw,42px)}
+#stream-now .platform-icon::after{font-size:12px}
 @media (prefers-reduced-motion:reduce){.platform-icon{transition:none}.platform-icon:hover,.platform-icon:focus-visible{transform:none}}
 
 /* bouton SHOP NOW (CTA principal) */
