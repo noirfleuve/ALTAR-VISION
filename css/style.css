@@ -736,11 +736,15 @@ section{padding:clamp(64px,11vw,150px) 0}
 }
 .music-embed iframe{width:100%;height:452px;display:block;border:none}
 @media (max-width:600px){.music-embed iframe{height:380px}}
-.platform-row{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;max-width:900px;margin:0 auto clamp(48px,7vw,80px)}
-.btn-platform{padding:15px 26px;font-size:14px}
+.platform-row{display:flex;flex-wrap:nowrap;justify-content:center;gap:12px;margin:0 auto clamp(48px,7vw,80px)}
+.btn-platform{padding:14px 20px;font-size:13px;white-space:nowrap;flex:0 1 auto}
 .btn-platform svg{width:20px;height:20px;flex:none}
-@media (max-width:600px){
-  .platform-row{flex-direction:column;align-items:stretch;max-width:340px}
+/* écrans étroits : on garde une seule ligne en n'affichant que les icônes */
+@media (max-width:900px){
+  .platform-row{gap:10px}
+  .btn-platform{padding:14px}
+  .btn-platform .pf-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .btn-platform svg{width:24px;height:24px}
 }
 .music-stats{margin:0 auto clamp(48px,7vw,80px)}
 .live-label{display:inline-flex;align-items:center;gap:8px}
